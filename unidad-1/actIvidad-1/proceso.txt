@@ -17,4 +17,59 @@ Elementos: <table>
 Código CSS
 Código JS
 
+----- index.html -----------------------------------------------------------------------
+
+Aqui se presentan todos los elementos que posee la calculadora, la hubicacion,
+la tabla, la botonera, etc.
+____________________________________________________________________________________
+*comenzamos con la cabezera head: conecta los tres archivos del proyecto. Es una 
+configuracion que no se ve.
+
+<head>
+// permite el uso de caracteres estándar
+    <meta charset="UTF-8">
+
+//establece que se ajuste la página al ancho de la pantalla del dispositivo
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+//Titulo de la pestaña denominado: 'calculadora'
+    <title>Calculadora</title>
+
+//httml busca en style.css el diseño y lo aplica en la pagina
+    <link rel="stylesheet" href="style.css">
+</head>
+____________________________________________________________________________________
+
+*<table> contiene los elementos. Cada <tr> es una fila y cada <td> es una celda.
+// lo que pongamos dentro de <tr> aparece en la misma linea
+<tr>
+
+// lo que pongamos en <td> es para celda individual 
+// los class="btn-numero" o "btn-operador" son para etiquetar asi el css le da el diseño
+// el contenido 0, ., =, / es lo que estara impreso en cada boton
+            <td><button class="btn-numero">0</button></td>
+            <td><button class="btn-numero">.</button></td>
+            <td><button class="btn-igual">=</button></td>
+            <td><button class="btn-operador">/</button></td>
+        </tr>
+
+//se repite lo mismo con cada parte de la tabla, hasta tener todos los elementos.
+
+____________________________________________________________________________________
+
+//<script> se usa para insertar el codigo
+//src indica al navegador la ubicación del archivo script.js
+
+<script src="script.js"></script>
+____________________________________________________________________________________
+
+----- style.css ------------------------------------------------------------------------
+
+Le da a los elementos html, un estilo, como color, tamaño y todo lo que se relacione
+con el diseño
+
+----- script.js ------------------------------------------------------------------------
+Le damos vida a los botones para que puedan reacizar las operaciones pertinentes en 
+las cuentas
+
 
