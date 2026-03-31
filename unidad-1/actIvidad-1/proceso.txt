@@ -68,6 +68,26 @@ ________________________________________________________________________________
 Le da a los elementos html, un estilo, como color, tamaño y todo lo que se relacione
 con el diseño
 
+En la imagen dada por el docente tenemos estos parametros, para la vestimenta:
+
+.btn-borrar {
+    color: white;
+    font-family: arial;
+    font-weight: bold;
+    font-size: 70%;
+    background-color: red;
+    box-shadow: 0px 5px #BB3E22;
+    width: 100%;
+    height: 30px;
+    border-radius: 6px;
+    border-color: #BB3E22;
+}
+
+Usaremos el mismo solo adaptando a las necesidades, modificando:
+background-color -> cada color diferente
+box-shadow -> el color de la sombra debería ir acorde al color del botón, (capaz mas oscuro).
+width -> los botones normales no son 100%, son mas pequeños.
+
 ----- script.js ------------------------------------------------------------------------
 Le damos vida a los botones para que puedan reacizar las operaciones pertinentes en 
 las cuentas
