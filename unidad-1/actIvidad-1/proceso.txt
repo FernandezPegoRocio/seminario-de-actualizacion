@@ -88,6 +88,9 @@ background-color -> cada color diferente
 box-shadow -> el color de la sombra debería ir acorde al color del botón, (capaz mas oscuro).
 width -> los botones normales no son 100%, son mas pequeños.
 
+para los colores podemos usar la pagina https://htmlcolorcodes.com/es/
+
+
 ----- script.js ------------------------------------------------------------------------
 Le damos vida a los botones para que puedan reacizar las operaciones pertinentes en 
 las cuentas
