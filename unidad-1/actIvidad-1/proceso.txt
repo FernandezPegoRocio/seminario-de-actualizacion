@@ -92,7 +92,13 @@ para los colores podemos usar la pagina https://htmlcolorcodes.com/es/
 
 
 ----- script.js ------------------------------------------------------------------------
-Le damos vida a los botones para que puedan reacizar las operaciones pertinentes en 
-las cuentas
+Le damos vida a los botones para que puedan reacizar las operaciones pertinentes en las cuentas
+- Arrancamos usando la operacion < let operacion = '' > que comienza vacía y va guardando todo lo que el usuario escribe
+- Luego tenemos < agregarNumero (es el valor) > al tocar un número, ese número se suma al final esto se hace con +=
+- < agregarOperador > Es lo mismo que numero pero con la funcion  solo que al final en ve de agregar numero es un simbolo (+,-,*,/)
+- Cuando calculamos usamos < eval() > JavaScript interpreta la cuenta y da el resultado
+- < borrar() > resetea toda la cuenta, no hay valor porque es un espacio vacio.
+
+
 
 
