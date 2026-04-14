@@ -1,1 +1,94 @@
+----------------------------------------------------WebComponents II----------------------------------------------------
+Contenidos a trabajar: Frontend (HTML, CSS y JS)
+Modalidad: Individual
+Formato de entrega: Repositorios GitHub carpeta "unidad-1/actividad-2"
 
+Consigna
+
+A partir del código desarrollado en la actividad 1 y el ejemplo desarrollado en clases. Migrar el planteo desarrollado hacia la abstracción propuesta como WebComponents (Derivación de HTMLElement). En caso de no contar con la resolución anterior, utilizar la plantilla trabajada en clases para su resolución.
+
+Requisitos
+La calculadora conservar la funcionalidad
+La clase debe implementar la interfaz mínima de WebComponents.
+
+_________________________________________________MODELO A IMPLEMENTAR____________________________________________________
+______________________________________________________EJEMPLO HTML_______________________________________________________
+<!DOCTYPE html>
+<html lang="en">
+
+
+<head>
+<meta charset="utf-8" />
+<title>untitled</title>
+
+</head>
+
+<body>
+
+
+</body>
+
+<script>
+
+class LoginForm extends HTMLElement
+{
+	constructor()
+	{
+		//Acá hay que instanciar en primer lugar (siempre) la clase base.
+		super();
+		
+		//Hay que definir todos los miembros del elemento nuevo que queremos componer.
+		this.username = document.createElement('input');
+		this.password = document.createElement('input');
+		this.loginBtn = document.createElement('button');
+
+		//Preparación de las instancias
+		this.username.type = 'text';
+		this.password.type = 'password';
+		this.username.placeholder = 'Ingrese usuario...';
+		this.password.placeholder = 'Ingrese contraseña...';
+		this.loginBtn.innerText = 'Iniciar sesión'
+
+		//Agregar elementos
+		this.appendChild(this.username);
+		this.appendChild(this.password);
+		this.appendChild(this.loginBtn);
+	}
+
+	onLoginBtnClick()
+	{
+		alert('Usuario inició sesión satisfactoriamente!');
+	}
+
+	connectedCallback()
+	{
+		console.log('Agregado al DOM');
+
+		this.loginBtn.onclick = this.onLoginBtnClick;
+	}
+
+	disconnectCallback()
+	{
+		alert('Disconnect');
+
+		this.loginBtn.onclick = null;
+	}
+
+}
+
+customElements.define('x-loginform', LoginForm );
+
+
+function main()
+{
+	let myCustomForm = new LoginForm();
+
+	document.body.appendChild( myCustomForm );
+}
+
+window.onload = main;
+
+</script>
+
+
+</html>
