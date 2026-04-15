@@ -92,3 +92,13 @@ window.onload = main;
 
 
 </html>
+________________________________________________________________________________________________________________________
+________________________________________________________________________________________________________________________
+_____________________________________________________PROCESO____________________________________________________________
+style.css -> queda igual, nmo presenta modificacion.
+
+index.html -> Se reemplaza la tabla directa por el custom element 
+
+El que presenta mayor cambio es el script.js ->
+la calculadora ahora tiene una clase de webcomponnet -> class Calculadora extends HTMLElement
+llamamos al constructor con la estructura de la calculadora, el cual contiene los botones
