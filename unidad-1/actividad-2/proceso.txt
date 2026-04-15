@@ -5,7 +5,9 @@ Formato de entrega: Repositorios GitHub carpeta "unidad-1/actividad-2"
 
 Consigna
 
-A partir del código desarrollado en la actividad 1 y el ejemplo desarrollado en clases. Migrar el planteo desarrollado hacia la abstracción propuesta como WebComponents (Derivación de HTMLElement). En caso de no contar con la resolución anterior, utilizar la plantilla trabajada en clases para su resolución.
+A partir del código desarrollado en la actividad 1 y el ejemplo desarrollado en clases. Migrar el planteo desarrollado hacia
+la abstracción propuesta como WebComponents (Derivación de HTMLElement). En caso de no contar con la resolución anterior, 
+utilizar la plantilla trabajada en clases para su resolución.
 
 Requisitos
 La calculadora conservar la funcionalidad
@@ -95,10 +97,44 @@ window.onload = main;
 ________________________________________________________________________________________________________________________
 ________________________________________________________________________________________________________________________
 _____________________________________________________PROCESO____________________________________________________________
-style.css -> queda igual, nmo presenta modificacion.
+s
+
+La calculadora escrita en la actividad 1, que se encontraba armada en tres archivos separados: index.html, style.css y 
+script.js. La calculadora de la actividad 1 era una tabla HTML armada de forma estática en el HTML, con funciones sueltas
+en el JS y con estilos en el CSS.
+El objetivo fue migrar ese planteamiento hacia la abstracción de WebComponents, según el modelo propuesto por el docente y
+expuesto en el ejemplo LoginForm.
+
+style.css -> queda igual, no presenta modificacion.
 
 index.html -> Se reemplaza la tabla directa por el custom element 
 
-El que presenta mayor cambio es el script.js ->
-la calculadora ahora tiene una clase de webcomponnet -> class Calculadora extends HTMLElement
-llamamos al constructor con la estructura de la calculadora, el cual contiene los botones
+La principal diferencia entre ambos planteamientos es que en la actividad 1 el HTML es la estructura principal y el JS solo 
+agrega comportamiento; en la actividad 2, en cambio, el HTML queda vacío y es la clase Calculadora la que arma, configura y 
+gestiona todo el componente desde el JS. De la misma manera, el HTML es simplemente un punto de entrada.
+
+Para llevar a cabo la migración se llevó a cabo el procedimiento propuesto por el modelo brindado:
+
+-----Primero se construyó la clase Calculadora extendiendo HTMLElement, ejecutando super() como primera instrucción del 
+constructor de la misma manera que lo hace el ejemplo presentado.
+
+-----Segundo, dentro del constructor se han indicado todos los miembros del componente como propiedades de la clase: el 
+display, la tabla, y cada uno de los botones (numéricos, operadores, igual y borrar). Esto imita el estilo del ejemplo donde 
+cada elemento que conforma el formulario se considera como this.username, this.password, etc.
+
+----- En tercer lugar, se han preparado todas las instancias: se les han asignado tipos, textos con innerText y clases CSS a
+cada botón, siguiendo la misma lógica de "preparación de instancias" que se presenta en el ejemplo.
+
+----- En cuarta instancia, se ha montado la estructura de la tabla fila por fila introduciendo cada botón en su respectiva 
+celda, y finalmente se ha llevado a cabo this.appendChild(this.tabla) para añadir toda la tabla al componente de la misma 
+forma que el docente realiza this.appendChild en cada campo del formulario que ha realizado.
+
+----- Quinto, los manejadores de eventos quedan definidos como métodos de la clase (onNumeroClick, onOperadorClick, 
+onIgualClick, onBorrarClick) siguiendo el patrón de implementación del manejador de eventos onLoginBtnClick del ejemplo. Se 
+implementó la interfaz mínima de WebComponents con connectedCallback, que vincula todos los eventos onclick de los botones, 
+y disconnectedCallback que desvincula asignándoles null, exactamente como se hace en el ejemplo con loginBtn.onclick. 
+
+----- Y finalmente se registró el componente con customElements.define('x-calculadora', Calculadora) y se instanciaba desde
+main() con document.body.appendChild(Calculadora) dejando el  del HTML vacío como en el prototipo. Los estilos originales 
+guardados en el style.css se mantuvieron pero se inyectaron desde el mismo componente con un método _inyectarEstilos() que 
+lo crea.
