@@ -15,7 +15,7 @@ class Calculadora extends HTMLElement
         // Instanciar la clase base (siempre primero)
         super();
 
-        // Definir todos los miembros del elemento (como el profe define username, password, etc.)
+        // Definir todos los miembros del elemento 
         this.operacion = '';
 
         this.display    = document.createElement('input');
@@ -156,7 +156,7 @@ class Calculadora extends HTMLElement
         return td;
     }
 
-    // Manejadores de eventos (como onLoginBtnClick del profe)
+    // Manejadores de eventos (como onLoginBtnClick)
     onNumeroClick(valor)
     {
         this.operacion += valor;
@@ -190,7 +190,7 @@ class Calculadora extends HTMLElement
     {
         console.log('Calculadora agregada al DOM');
 
-        // Vincular eventos al conectarse al DOM (como el profe hace con loginBtn.onclick)
+        // Vincular eventos al conectarse al DOM (como con loginBtn.onclick)
         this.btn7.onclick     = () => this.onNumeroClick('7');
         this.btn8.onclick     = () => this.onNumeroClick('8');
         this.btn9.onclick     = () => this.onNumeroClick('9');
@@ -214,7 +214,7 @@ class Calculadora extends HTMLElement
     {
         console.log('Calculadora removida del DOM');
 
-        // Desvincular eventos al salir del DOM (como el profe hace con loginBtn.onclick = null)
+        // Desvincular eventos al salir del DOM (como se hace con loginBtn.onclick = null)
         this.btn7.onclick     = null;
         this.btn8.onclick     = null;
         this.btn9.onclick     = null;
