@@ -135,6 +135,9 @@ implementó la interfaz mínima de WebComponents con connectedCallback, que vinc
 y disconnectedCallback que desvincula asignándoles null, exactamente como se hace en el ejemplo con loginBtn.onclick. 
 
 ----- Y finalmente se registró el componente con customElements.define('x-calculadora', Calculadora) y se instanciaba desde
-main() con document.body.appendChild(Calculadora) dejando el  del HTML vacío como en el prototipo. Los estilos originales 
-guardados en el style.css se mantuvieron pero se inyectaron desde el mismo componente con un método _inyectarEstilos() que 
-lo crea.
+main() con document.body.appendChild(Calculadora) dejando el  del HTML vacío como en el prototipo.  En el connectedCallback se 
+vinculan todos los eventos usando .bind(this). Sin bind, JavaScript resuelve el this según quien recibe el evento, que en este 
+caso sería el botón, y el botón no tiene las propiedades de la calculadora como el display. Con bind(this) se garantiza que el 
+this siempre apunte a la instancia de Calculadora. En el disconnectedCallback se desvinculan todos los eventos asignándoles null.
+Los estilos originales guardados en el style.css se mantuvieron pero se inyectaron desde el mismo componente con un método 
+_inyectarEstilos() que lo crea.
