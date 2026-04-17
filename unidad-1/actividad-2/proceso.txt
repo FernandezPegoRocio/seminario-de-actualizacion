@@ -97,47 +97,40 @@ window.onload = main;
 ________________________________________________________________________________________________________________________
 ________________________________________________________________________________________________________________________
 _____________________________________________________PROCESO____________________________________________________________
-s
 
-La calculadora escrita en la actividad 1, que se encontraba armada en tres archivos separados: index.html, style.css y 
-script.js. La calculadora de la actividad 1 era una tabla HTML armada de forma estática en el HTML, con funciones sueltas
-en el JS y con estilos en el CSS.
-El objetivo fue migrar ese planteamiento hacia la abstracción de WebComponents, según el modelo propuesto por el docente y
-expuesto en el ejemplo LoginForm.
+La calculadora que se mostró en la actividad 1 era un elemento, el cual se encontró terminado en tres archivos también, index.html, style.css y script.js. La calculadora de la actividad 1 era una tabla HTML construida de manera estática en el propio HTML, con funciones sueltas en el JS y con estilos en el CSS, y el objetivo consistía en migrar dicho planteamiento hacia la abstracción de WebComponents.
 
 style.css -> queda igual, no presenta modificacion.
 
 index.html -> Se reemplaza la tabla directa por el custom element 
 
-La principal diferencia entre ambos planteamientos es que en la actividad 1 el HTML es la estructura principal y el JS solo 
-agrega comportamiento; en la actividad 2, en cambio, el HTML queda vacío y es la clase Calculadora la que arma, configura y 
-gestiona todo el componente desde el JS. De la misma manera, el HTML es simplemente un punto de entrada.
+La principal diferencia entre ambos planteamientos es que en el planteado en la actividad 1 el HTML lo es todo, es la principal estructura y sólo el JS añade comportamiento; en cambio, en el planteado en la actividad 2, el HTML está vacío y la clase Calculadora forma, configura y se ocupa de todo el componente desde el JS. De la misma forma el HTML es solamente un punto de entrada.
 
-Para llevar a cabo la migración se llevó a cabo el procedimiento propuesto por el modelo brindado:
+Para realizar la migración se siguió el procedimiento previsto por el modelo que se proporciona:
 
------Primero se construyó la clase Calculadora extendiendo HTMLElement, ejecutando super() como primera instrucción del 
-constructor de la misma manera que lo hace el ejemplo presentado.
+-----Primero se ha creado la clase Calculadora extendiendo HTMLElement, invocando super(), la primera instrucción del constructor de la misma forma que en el ejemplo dado.
 
------Segundo, dentro del constructor se han indicado todos los miembros del componente como propiedades de la clase: el 
-display, la tabla, y cada uno de los botones (numéricos, operadores, igual y borrar). Esto imita el estilo del ejemplo donde 
-cada elemento que conforma el formulario se considera como this.username, this.password, etc.
+-----Segundo, se han indicado en el constructor todos los miembros del componente como propiedades de la propia clase: el display, 
+la tabla, y cada uno de los botones (de números, operaciones, igual y borrar). Esto recuerda el ejemplo, en el que cada uno de los 
+elementos que componen el formulario son como this.username, this.password, etc.
 
------ En tercer lugar, se han preparado todas las instancias: se les han asignado tipos, textos con innerText y clases CSS a
-cada botón, siguiendo la misma lógica de "preparación de instancias" que se presenta en el ejemplo.
+----- Tercero, todos los instanciados (tipos, textos innerText, clases CSS) cada botón obtiene la asignación.
 
------ En cuarta instancia, se ha montado la estructura de la tabla fila por fila introduciendo cada botón en su respectiva 
-celda, y finalmente se ha llevado a cabo this.appendChild(this.tabla) para añadir toda la tabla al componente de la misma 
-forma que el docente realiza this.appendChild en cada campo del formulario que ha realizado.
+----- En cuarto lugar, se ha montado la estructura de la tabla fila por fila incorporando cada botón 
+en su respectiva celda, y por último se ha ejecutado this.appendChild(this.tabla) para introducir toda la tabla.
 
------ Quinto, los manejadores de eventos quedan definidos como métodos de la clase (onNumeroClick, onOperadorClick, 
-onIgualClick, onBorrarClick) siguiendo el patrón de implementación del manejador de eventos onLoginBtnClick del ejemplo. Se 
-implementó la interfaz mínima de WebComponents con connectedCallback, que vincula todos los eventos onclick de los botones, 
-y disconnectedCallback que desvincula asignándoles null, exactamente como se hace en el ejemplo con loginBtn.onclick. 
+----- En quinto lugar quedan definidas como métodos de la clase los manejadores de eventos (onNumeroClick, 
+onOperadorClick, onIgualClick, onBorrarClick) siguiendo el patrón de implementación del manejador de eventos 
+onLoginBtnClick del ejemplo. Se implementó la mínima interfaz de WebComponents con connectedCallback que vincula 
+todos los eventos onclick de los botones, y disconnectedCallback desvinculándoles con null, tal como se hace 
+en el ejemplo de loginBtn.onclick. 
 
------ Y finalmente se registró el componente con customElements.define('x-calculadora', Calculadora) y se instanciaba desde
-main() con document.body.appendChild(Calculadora) dejando el  del HTML vacío como en el prototipo.  En el connectedCallback se 
-vinculan todos los eventos usando .bind(this). Sin bind, JavaScript resuelve el this según quien recibe el evento, que en este 
-caso sería el botón, y el botón no tiene las propiedades de la calculadora como el display. Con bind(this) se garantiza que el 
-this siempre apunte a la instancia de Calculadora. En el disconnectedCallback se desvinculan todos los eventos asignándoles null.
-Los estilos originales guardados en el style.css se mantuvieron pero se inyectaron desde el mismo componente con un método 
-_inyectarEstilos() que lo crea.
+----- Y por último, se registró el componente con customElements.define('x-calculadora', Calculadora) e instanciaba desde main() 
+con document.body.appendChild(Calculadora)  como para dejar el  de HTML vacío como en la prototipo. En el connectedCallback se 
+quedan vinculados todos los eventos usando .bind(this); sin bind, JavaScript resuelve el this en función de quien recibe el evento, 
+siendo éste el botón, siendo así que el botón no tiene las propiedades de la calculadora como el display.
+Al aplicar bind(this), se logra que el this apunte siempre a la instancia de Calculadora. En el disconnectedCallback se eliminan 
+todos los eventos indicándoles que son null. Los estilos originales almacenados en el style.css se conservaban, pero desde el mismo 
+componente se inyectaron a través de un método _inyectarEstilos() que se encargaba de su creación.
+
+
