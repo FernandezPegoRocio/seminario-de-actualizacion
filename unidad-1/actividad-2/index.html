@@ -12,16 +12,16 @@ class Calculadora extends HTMLElement
 {
     constructor()
     {
-        // Instanciar la clase base (siempre primero)
+        // clase base 
         super();
 
-        // Definir todos los miembros del elemento 
+        // Definir todos los miembros del elemento
         this.operacion = '';
 
         this.display    = document.createElement('input');
         this.tabla      = document.createElement('table');
 
-        // Botones numéricos
+        // Botones numericos
         this.btn7       = document.createElement('button');
         this.btn8       = document.createElement('button');
         this.btn9       = document.createElement('button');
@@ -40,7 +40,7 @@ class Calculadora extends HTMLElement
         this.btnMult    = document.createElement('button');
         this.btnDiv     = document.createElement('button');
 
-        // Botones acción
+        // Botones accion
         this.btnIgual   = document.createElement('button');
         this.btnBorrar  = document.createElement('button');
 
@@ -48,7 +48,7 @@ class Calculadora extends HTMLElement
         this.display.type     = 'text';
         this.display.readOnly = true;
 
-        // Preparación de botones numéricos
+        // Preparación de botones numericos
         this.btn7.innerText     = '7';
         this.btn8.innerText     = '8';
         this.btn9.innerText     = '9';
@@ -61,34 +61,34 @@ class Calculadora extends HTMLElement
         this.btn0.innerText     = '0';
         this.btnPunto.innerText = '.';
 
-        // Preparación de botones operadores
+        // botones operadocion
         this.btnSuma.innerText  = '+';
         this.btnResta.innerText = '-';
         this.btnMult.innerText  = '*';
         this.btnDiv.innerText   = '/';
 
-        // Preparación de botones acción
+        // botones acción igual y borrar
         this.btnIgual.innerText  = '=';
         this.btnBorrar.innerText = 'Borrar';
 
-        // Clases CSS
-        this.btn7.className     = 'btn-numero';
-        this.btn8.className     = 'btn-numero';
-        this.btn9.className     = 'btn-numero';
-        this.btn4.className     = 'btn-numero';
-        this.btn5.className     = 'btn-numero';
-        this.btn6.className     = 'btn-numero';
-        this.btn3.className     = 'btn-numero';
-        this.btn2.className     = 'btn-numero';
-        this.btn1.className     = 'btn-numero';
-        this.btn0.className     = 'btn-numero';
-        this.btnPunto.className = 'btn-numero';
-        this.btnSuma.className  = 'btn-operador';
-        this.btnResta.className = 'btn-operador';
-        this.btnMult.className  = 'btn-operador';
-        this.btnDiv.className   = 'btn-operador';
-        this.btnIgual.className = 'btn-igual';
-        this.btnBorrar.className= 'btn-borrar';
+        // Clases de CSS
+        this.btn7.className      = 'btn-numero';
+        this.btn8.className      = 'btn-numero';
+        this.btn9.className      = 'btn-numero';
+        this.btn4.className      = 'btn-numero';
+        this.btn5.className      = 'btn-numero';
+        this.btn6.className      = 'btn-numero';
+        this.btn3.className      = 'btn-numero';
+        this.btn2.className      = 'btn-numero';
+        this.btn1.className      = 'btn-numero';
+        this.btn0.className      = 'btn-numero';
+        this.btnPunto.className  = 'btn-numero';
+        this.btnSuma.className   = 'btn-operador';
+        this.btnResta.className  = 'btn-operador';
+        this.btnMult.className   = 'btn-operador';
+        this.btnDiv.className    = 'btn-operador';
+        this.btnIgual.className  = 'btn-igual';
+        this.btnBorrar.className = 'btn-borrar';
 
         // Armar la tabla fila por fila
         // Fila display
@@ -144,7 +144,7 @@ class Calculadora extends HTMLElement
         // Agregar la tabla al elemento
         this.appendChild(this.tabla);
 
-        // Inyectar estilos
+     
         this._inyectarEstilos();
     }
 
@@ -156,7 +156,23 @@ class Calculadora extends HTMLElement
         return td;
     }
 
-    // Manejadores de eventos (como onLoginBtnClick)
+    // Manejadores de eventos 
+    onBtn7Click()     { this.onNumeroClick('7'); }
+    onBtn8Click()     { this.onNumeroClick('8'); }
+    onBtn9Click()     { this.onNumeroClick('9'); }
+    onBtn4Click()     { this.onNumeroClick('4'); }
+    onBtn5Click()     { this.onNumeroClick('5'); }
+    onBtn6Click()     { this.onNumeroClick('6'); }
+    onBtn3Click()     { this.onNumeroClick('3'); }
+    onBtn2Click()     { this.onNumeroClick('2'); }
+    onBtn1Click()     { this.onNumeroClick('1'); }
+    onBtn0Click()     { this.onNumeroClick('0'); }
+    onBtnPuntoClick() { this.onNumeroClick('.'); }
+    onBtnSumaClick()  { this.onOperadorClick('+'); }
+    onBtnRestaClick() { this.onOperadorClick('-'); }
+    onBtnMultClick()  { this.onOperadorClick('*'); }
+    onBtnDivClick()   { this.onOperadorClick('/'); }
+
     onNumeroClick(valor)
     {
         this.operacion += valor;
@@ -190,48 +206,51 @@ class Calculadora extends HTMLElement
     {
         console.log('Calculadora agregada al DOM');
 
-        // Vincular eventos al conectarse al DOM (como con loginBtn.onclick)
-        this.btn7.onclick     = () => this.onNumeroClick('7');
-        this.btn8.onclick     = () => this.onNumeroClick('8');
-        this.btn9.onclick     = () => this.onNumeroClick('9');
-        this.btn4.onclick     = () => this.onNumeroClick('4');
-        this.btn5.onclick     = () => this.onNumeroClick('5');
-        this.btn6.onclick     = () => this.onNumeroClick('6');
-        this.btn3.onclick     = () => this.onNumeroClick('3');
-        this.btn2.onclick     = () => this.onNumeroClick('2');
-        this.btn1.onclick     = () => this.onNumeroClick('1');
-        this.btn0.onclick     = () => this.onNumeroClick('0');
-        this.btnPunto.onclick = () => this.onNumeroClick('.');
-        this.btnSuma.onclick  = () => this.onOperadorClick('+');
-        this.btnResta.onclick = () => this.onOperadorClick('-');
-        this.btnMult.onclick  = () => this.onOperadorClick('*');
-        this.btnDiv.onclick   = () => this.onOperadorClick('/');
-        this.btnIgual.onclick = () => this.onIgualClick();
-        this.btnBorrar.onclick= () => this.onBorrarClick();
+        // Se usa .bind(this) para anclar el contexto de la clase al método que se pasa.
+        // Sin bind, JavaScript resuelve el 'this' según quien recibe el evento,
+        // y el botón no tiene las propiedades de la calculadora 
+        // bind(this) garantiza que el 'this' siempre sea el de la clase Calculadora
+        
+        this.btn7.onclick      = this.onBtn7Click.bind(this);
+        this.btn8.onclick      = this.onBtn8Click.bind(this);
+        this.btn9.onclick      = this.onBtn9Click.bind(this);
+        this.btn4.onclick      = this.onBtn4Click.bind(this);
+        this.btn5.onclick      = this.onBtn5Click.bind(this);
+        this.btn6.onclick      = this.onBtn6Click.bind(this);
+        this.btn3.onclick      = this.onBtn3Click.bind(this);
+        this.btn2.onclick      = this.onBtn2Click.bind(this);
+        this.btn1.onclick      = this.onBtn1Click.bind(this);
+        this.btn0.onclick      = this.onBtn0Click.bind(this);
+        this.btnPunto.onclick  = this.onBtnPuntoClick.bind(this);
+        this.btnSuma.onclick   = this.onBtnSumaClick.bind(this);
+        this.btnResta.onclick  = this.onBtnRestaClick.bind(this);
+        this.btnMult.onclick   = this.onBtnMultClick.bind(this);
+        this.btnDiv.onclick    = this.onBtnDivClick.bind(this);
+        this.btnIgual.onclick  = this.onIgualClick.bind(this);
+        this.btnBorrar.onclick = this.onBorrarClick.bind(this);
     }
 
     disconnectedCallback()
     {
         console.log('Calculadora removida del DOM');
 
-        // Desvincular eventos al salir del DOM (como se hace con loginBtn.onclick = null)
-        this.btn7.onclick     = null;
-        this.btn8.onclick     = null;
-        this.btn9.onclick     = null;
-        this.btn4.onclick     = null;
-        this.btn5.onclick     = null;
-        this.btn6.onclick     = null;
-        this.btn3.onclick     = null;
-        this.btn2.onclick     = null;
-        this.btn1.onclick     = null;
-        this.btn0.onclick     = null;
-        this.btnPunto.onclick = null;
-        this.btnSuma.onclick  = null;
-        this.btnResta.onclick = null;
-        this.btnMult.onclick  = null;
-        this.btnDiv.onclick   = null;
-        this.btnIgual.onclick = null;
-        this.btnBorrar.onclick= null;
+        this.btn7.onclick      = null;
+        this.btn8.onclick      = null;
+        this.btn9.onclick      = null;
+        this.btn4.onclick      = null;
+        this.btn5.onclick      = null;
+        this.btn6.onclick      = null;
+        this.btn3.onclick      = null;
+        this.btn2.onclick      = null;
+        this.btn1.onclick      = null;
+        this.btn0.onclick      = null;
+        this.btnPunto.onclick  = null;
+        this.btnSuma.onclick   = null;
+        this.btnResta.onclick  = null;
+        this.btnMult.onclick   = null;
+        this.btnDiv.onclick    = null;
+        this.btnIgual.onclick  = null;
+        this.btnBorrar.onclick = null;
     }
 
     _inyectarEstilos()
