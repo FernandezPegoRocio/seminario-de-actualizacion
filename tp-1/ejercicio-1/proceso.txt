@@ -1,10 +1,10 @@
----------------------------------------------------------CONSIGNA---------------------------------------------------------
+----------------------------------------------------------------CONSIGNA---------------------------------------------------------------
 Construya un programa que solicite al usuario el nombre, luego el apellido y finalmente muestre un saludo como el 
 siguiente:
 ¡Buenos días APELLIDO, Nombre!. Teniendo en cuenta que el apellido aparezca completamente en mayúsculas y el nombre con 
 la mayúscula en la primera letra. Independientemente de cómo sea recibidas las cadenas de texto.
 
---------------------------------------------------------PROCESO-----------------------------------------------------------
+----------------------------------------------------------------PROCESO----------------------------------------------------------------
 ---Para su solución se ha usado un único archivo index.html
 ---construi primero la estructura HTML con un par de campos de texto:
    + uno para el nombre y otro para el apellido
@@ -14,3 +14,11 @@ la mayúscula en la primera letra. Independientemente de cómo sea recibidas las
 ---toUpperCase() --> pone el texto en mayusculka
 ---charAt(0).toUpperCase() + slice(1).toLowerCase() --> Solo la primera letra esta en mayus y el restyo en minus
 ---textContent --> muestra el saludo con el APELLIDO, Nombre
+
+---------------------------------------------------------------EJECUCIÓN---------------------------------------------------------------
+---Abrir el archivo index.html en el navegador
+---Ingresar la fecha de nacimiento en el campo de texto en formato DD/MM/AAAA
+---Presionar el botón "Confirmar"
+---Si la fecha es válida --> se muestra el mensaje de éxito en verde
+---Si la fecha es inválida --> se muestra el mensaje de error en rojo indicando el número de reintento
+---El campo se limpia automáticamente para volver a intentarlo
