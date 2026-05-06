@@ -1,1 +1,16 @@
+---------------------------------------------------------CONSIGNA---------------------------------------------------------
+Construya un programa que solicite al usuario el nombre, luego el apellido y finalmente muestre un saludo como el 
+siguiente:
+¡Buenos días APELLIDO, Nombre!. Teniendo en cuenta que el apellido aparezca completamente en mayúsculas y el nombre con 
+la mayúscula en la primera letra. Independientemente de cómo sea recibidas las cadenas de texto.
 
+--------------------------------------------------------PROCESO-----------------------------------------------------------
+---Para su solución se ha usado un único archivo index.html
+---construi primero la estructura HTML con un par de campos de texto:
+   + uno para el nombre y otro para el apellido
+   + un botón para confirmar la acción 
+   + un texto para mostrar el saludo
+---Se definió la función mostrarSaludo() --> Se encarga de recoger la info del formulario con getElementByld
+---toUpperCase() --> pone el texto en mayusculka
+---charAt(0).toUpperCase() + slice(1).toLowerCase() --> Solo la primera letra esta en mayus y el restyo en minus
+---textContent --> muestra el saludo con el APELLIDO, Nombre
