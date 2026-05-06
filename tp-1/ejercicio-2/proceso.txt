@@ -1,1 +1,26 @@
+--------------------------------------------------------------CONSIGNA-----------------------------------------------------------------
+Construya un programa que solicite al usuario su fecha de nacimiento y que luego valide si la cadena de texto ingresada 
+es realmente una fecha. En caso de que no, deberá mostrar un mensaje de error notificando que el texto suministrado es 
+inválido y que vuelva a pedir la fecha hasta que sea válida. Cada error deberá incluir el número de reintentos.
+---------------------------------------------------------------PROCESO-----------------------------------------------------------------
+---Para su solución se ha usado un único archivo index.html
+---Se construyó la estructura HTML con:
+   + un campo de texto para ingresar la fecha en formato DD/MM/AAAA
+   + un botón para confirmar la acción
+   + un texto para mostrar el mensaje de éxito
+   + un texto para mostrar el mensaje de error con el número de reintento
+---Se declaró la variable reintentos fuera de la función --> persiste su valor entre cada llamada
+---Se definió la función validarFecha() --> Se encarga de recoger el valor del input con getElementById
+---split('/') --> divide la cadena ingresada en tres partes: día, mes y año
+---parseInt() --> convierte cada parte en número entero
+---new Date() --> construye un objeto fecha con los valores obtenidos
+---Se verificó que los datos que devuelve Date coincidan con los ingresados --> detecta fechas inexistentes como 31/02
+---Si es válida --> textContent muestra el mensaje de éxito en verde y reintentos vuelve a 0
+---Si es inválida --> reintentos++ y textContent muestra el error indicando el número de reintento en rojo
 
+---------------------------------------------------------------EJECUCIÓN--------------------------------------------------------------
+---Abrir el archivo index.html en el navegador
+---Ingresar el nombre en el primer campo de texto
+---Ingresar el apellido en el segundo campo de texto
+---Presionar el botón "Saludar"
+---Se muestra el saludo con el formato: ¡Buenos días APELLIDO, Nombre!
