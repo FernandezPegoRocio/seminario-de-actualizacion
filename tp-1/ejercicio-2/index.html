@@ -1,1 +1,104 @@
 
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fecha de Nacimiento</title>
+</head>
+<body>
+    <div class="contenedor">
+        <h1>Fecha de nacimiento</h1>
+        <label for="inputFecha">Ingresá tu fecha de nacimiento (DD/MM/AAAA):</label>
+        <input type="text" id="inputFecha" placeholder="DD/MM/AAAA">
+        <button onclick="validarFecha()">Confirmar</button>
+        <p id="resultado"></p>
+        <p id="errores"></p>
+    </div>
+</body>
+<style>
+    body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 90vh;
+        background-color: #f0f0f0;
+    }
+    .contenedor {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        background-color: #F5F5F5;
+        padding: 30px;
+        border-radius: 16px;
+        font-family: Arial, sans-serif;
+    }
+    input {
+        padding: 8px;
+        font-size: 1em;
+        border-radius: 8px;
+        border: 1px solid #ccc;
+    }
+    button {
+        width: 100%;
+        height: 50px;
+        font-size: 1.2em;
+        font-family: Arial, sans-serif;
+        font-weight: bold;
+        color: white;
+        background-color: #4a90d9;
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0px 5px #1a1a1a;
+        cursor: pointer;
+    }
+    #resultado {
+        font-size: 1.3em;
+        font-weight: bold;
+        color: green;
+        margin-top: 10px;
+    }
+    #errores {
+        font-size: 1em;
+        font-weight: bold;
+        color: red;
+        margin-top: 5px;
+    }
+</style>
+<script>
+    let reintentos = 0;
+
+    function validarFecha() {
+        let input  = document.getElementById('inputFecha').value;
+        let partes = input.split('/');
+
+        let esValida = false;
+
+        if (partes.length === 3) {
+            let dia  = parseInt(partes[0]);
+            let mes  = parseInt(partes[1]);
+            let anio = parseInt(partes[2]);
+
+            let fecha = new Date(anio, mes - 1, dia);
+
+            esValida = 
+                fecha.getFullYear() === anio &&
+                fecha.getMonth()    === mes - 1 &&
+                fecha.getDate()     === dia &&
+                anio > 1900 &&
+                anio <= new Date().getFullYear();
+        }
+
+        if (esValida) {
+            document.getElementById('resultado').textContent = '✔ Fecha válida: ' + input;
+            document.getElementById('errores').textContent   = '';
+            reintentos = 0;
+        } else {
+            reintentos++;
+            document.getElementById('errores').textContent   = '✘ Fecha inválida. Reintento N° ' + reintentos + '. Ingresá el formato DD/MM/AAAA.';
+            document.getElementById('resultado').textContent = '';
+            document.getElementById('inputFecha').value      = '';
+        }
+    }
+</script>
+</html>
