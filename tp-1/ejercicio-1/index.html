@@ -1,1 +1,72 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Saludo</title>
+</head>
+<body>
+    <div class="contenedor">
+        <h1>Buenos dias!!</h1>
+        <label for="inputNombre">Nombre:</label>
+        <input type="text" id="inputNombre" placeholder="Ingresá tu nombre">
+        <label for="inputApellido">Apellido:</label>
+        <input type="text" id="inputApellido" placeholder="Ingresá tu apellido">
+        <button onclick="mostrarSaludo()">Saludar</button>
+        <p id="resultado"></p>
+    </div>
+</body>
+<style>
+    body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 90vh;
+        background-color: #f0f0f0;
+    }
+    .contenedor {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        background-color: #F5F5F5;
+        padding: 30px;
+        border-radius: 16px;
+        font-family: Arial, sans-serif;
+    }
+    input {
+        padding: 8px;
+        font-size: 1em;
+        border-radius: 8px;
+        border: 1px solid #ccc;
+    }
+    button {
+        width: 100%;
+        height: 50px;
+        font-size: 1.2em;
+        font-family: Arial, sans-serif;
+        font-weight: bold;
+        color: white;
+        background-color: #4a90d9;
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0px 5px #1a1a1a;
+        cursor: pointer;
+    }
+    #resultado {
+        font-size: 1.3em;
+        font-weight: bold;
+        margin-top: 10px;
+    }
+</style>
+<script>
+    function mostrarSaludo() {
+        let nombre   = document.getElementById('inputNombre').value;
+        let apellido = document.getElementById('inputApellido').value;
 
+        let apellidoFormateado = apellido.toUpperCase();
+        let nombreFormateado   = nombre.charAt(0).toUpperCase() + nombre.slice(1).toLowerCase();
+
+        document.getElementById('resultado').textContent = '¡Buenos días ' + apellidoFormateado + ', ' + nombreFormateado + '!';
+    }
+</script>
+</html>
