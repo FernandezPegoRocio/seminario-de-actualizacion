@@ -1,0 +1,35 @@
+---------------------------------------------------------CONSIGNA---------------------------------------------------------
+Observe la imagen adjuntada "ejercicio_3_equalizer". Construya el WebComponent correspondiente. Considere que el 
+WebComponent internamente contiene una propiedad que se trata de un objeto de datos que posee toda la información 
+representada en la imagen. El WebComponent debe tener un método llamado getData para obtener dichos datos y setData 
+para asignarlos. El método setData debe aplicar instantáneamente las modificaciones visuales.
+
+--------------------------------------------------------PROCESO-----------------------------------------------------------
+---Para su solución se siguió el mismo lineamiento de la calculadora: un único archivo index.html con HTML, CSS y JS
+---Se construyó la clase Ecualizador extendiendo HTMLElement, invocando super() como primera instrucción
+---Se definió this.datos como objeto interno con las 10 bandas de frecuencia:
+   + frecuencia: etiqueta de cada banda (32Hz, 64Hz, 130Hz, 260Hz, 500Hz, 1k, 2k, 4k, 8.3k, 16.5k)
+   + db: valor inicial 0 para cada banda
+---Se declararon como miembros del componente:
+   + this.sliders --> array que almacena los 10 input range verticales
+   + this.labels  --> array que almacena los 10 span de valor en dB
+---Se construyeron las 10 bandas dinámicamente con un for iterando sobre this.datos.bandas:
+   + cada banda tiene un label con la frecuencia, un input range vertical y un span con el valor en dB
+---writing-mode: vertical-lr + direction: rtl --> logra que el slider sea vertical como en la imagen
+---_formatDb() --> formatea el valor numérico al formato +0dB / +XdB / -XdB
+---getData() --> devuelve this.datos completo
+---setData() --> recibe un objeto nuevo, lo asigna a this.datos y actualiza sliders y labels instantáneamente
+---onSliderChange(index) --> actualiza this.datos.bandas[index].db y el label al mover un slider
+---En connectedCallback se vinculan todos los eventos con .bind(this, i) para anclar contexto e índice
+---En disconnectedCallback se eliminan todos los eventos asignándoles null
+---Los botones OK, Cancel, Audition y Help se registran en connectedCallback con .bind(this)
+---_inyectarEstilos() --> inyecta los estilos al documento igual que en la calculadora
+
+--------------------------------------------------------EJECUCIÓN---------------------------------------------------------
+---Abrir el archivo index.html en el navegador
+---Se visualizan las 10 bandas de frecuencia con sus sliders verticales y valores en dB
+---Mover cualquier slider para cambiar el valor de dB de esa banda
+---El label debajo del slider se actualiza instantáneamente mostrando el nuevo valor
+---Desde consola se puede llamar a miEcualizador.getData() para obtener el objeto de datos actual
+---Desde consola se puede llamar a miEcualizador.setData({...}) para modificar valores visualmente
+

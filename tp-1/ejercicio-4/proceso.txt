@@ -1,0 +1,33 @@
+---------------------------------------------------------CONSIGNA---------------------------------------------------------
+
+A partir del ejemplo proporcionado en la página de w3schools sobre CSS Chat, construya una abstracción mediante 
+WebComponents que encapsule esa interfaz y diseñe un método que permita insertar los mensajes intercambiados.
+
+--------------------------------------------------------PROCESO-----------------------------------------------------------
+
+---Para su solución se siguió el mismo lineamiento de la calculadora: un único archivo index.html con HTML, CSS y JS
+---Se construyó la clase ChatMensajes extendiendo HTMLElement, invocando super() como primera instrucción
+---Se declararon como miembros del componente:
+   + this.mensajes    --> array interno que almacena todos los mensajes cargados
+   + this.contenedor  --> div principal que envuelve todo el componente
+   + this.titulo      --> h2 con el texto "Chat Messages"
+   + this.divMensajes --> div que contiene los bloques de mensajes
+---agregarMensaje(avatar, texto, hora, lado) --> método principal para insertar mensajes, recibe:
+   + avatar --> URL de la imagen de perfil
+   + texto  --> contenido del mensaje
+   + hora   --> horario del mensaje
+   + lado   --> 'izquierda' o 'derecha' para determinar la posición del avatar y la hora
+---_renderMensaje(mensaje) --> construye el bloque HTML de cada mensaje y lo agrega a divMensajes:
+   + si lado es 'derecha' aplica las clases darker, avatar right y time-left
+   + si lado es 'izquierda' aplica las clases base y time-right
+---Los estilos replican fielmente el ejemplo de w3schools inyectados desde _inyectarEstilos()
+---connectedCallback y disconnectedCallback implementan la interfaz mínima de WebComponents
+---En main() se instancia el componente y se cargan los 4 mensajes del ejemplo con agregarMensaje()
+
+--------------------------------------------------------EJECUCIÓN---------------------------------------------------------
+
+---Abrir el archivo index.html en el navegador
+---Se visualizan los 4 mensajes del ejemplo alternando entre izquierda y derecha con hora y avatar
+---Para agregar un nuevo mensaje llamar a miChat.agregarMensaje(avatar, texto, hora, lado)
+---El mensaje se renderiza instantáneamente en el componente
+

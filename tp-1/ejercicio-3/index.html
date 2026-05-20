@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Graphic EQ</title>
+</head>
+<body>
+</body>
+<style>
+    body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 90vh;
+        background-color: #f0f0f0;
+    }
+    .eq-contenedor {
+        display: flex;
+        flex-direction: row;
+        gap: 10px;
+        background-color: #d4d0c8;
+        padding: 20px;
+        border: 2px solid #808080;
+        border-radius: 4px;
+        font-family: Arial, sans-serif;
+    }
+    .eq-bandas {
+        display: flex;
+        flex-direction: row;
+        gap: 10px;
+    }
+    .eq-banda {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 6px;
+    }
+    .eq-banda label {
+        font-size: 0.75em;
+        color: #1a1a1a;
+    }
+    .eq-banda input[type="range"] {
+        writing-mode: vertical-lr;
+        direction: rtl;
+        width: 30px;
+        height: 150px;
+        cursor: pointer;
+        accent-color: #4a4a4a;
+    }
+    .eq-banda span {
+        font-size: 0.75em;
+        color: #1a1a1a;
+        min-width: 40px;
+        text-align: center;
+    }
+    .eq-botones {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        justify-content: flex-start;
+        padding-left: 10px;
+    }
+    .eq-botones button {
+        width: 80px;
+        height: 30px;
+        font-size: 0.9em;
+        font-family: Arial, sans-serif;
+        background-color: #d4d0c8;
+        border: 2px solid #808080;
+        border-radius: 2px;
+        cursor: pointer;
+        box-shadow: 1px 1px #ffffff inset, -1px -1px #404040 inset;
+    }
+</style>
+<script>
+    class Ecualizador extends HTMLElement
+    {
+        constructor()
+        {
+            super();
+
+            this.datos = {
+                bandas: [
+                    { frecuencia: '32Hz',   db: 0 },
+                    { frecuencia: '64Hz',   db: 0 },
+                    { frecuencia: '130Hz',  db: 0 },
+                    { frecuencia: '260Hz',  db: 0 },
+                    { frecuencia: '500Hz',  db: 0 },
+                    { frecuencia: '1k',     db: 0 },
+                    { frecuencia: '2k',     db: 0 },
+                    { frecuencia: '4k',     db: 0 },
+                    { frecuencia: '8.3k',   db: 0 },
+                    { frecuencia: '16.5k',  db: 0 }
+                ]
+            };
+
+            this.contenedor = document.createElement('div');
+            this.contenedor.className = 'eq-contenedor';
+
+            this.divBandas = document.createElement('div');
+            this.divBandas.className = 'eq-bandas';
+
+            this.sliders = [];
+            this.labels  = [];
+
+            for (let i = 0; i < this.datos.bandas.length; i++)
+            {
+                let banda = this.datos.bandas[i];
+
+                let divBanda = document.createElement('div');
+                divBanda.className = 'eq-banda';
+
+                let labelFreq = document.createElement('label');
+                labelFreq.innerText = banda.frecuencia;
+
+                let slider = document.createElement('input');
+                slider.type  = 'range';
+                slider.min   = -12;
+                slider.max   = 12;
+                slider.value = banda.db;
+
+                let spanDb = document.createElement('span');
+                spanDb.innerText = this._formatDb(banda.db);
+
+                divBanda.appendChild(labelFreq);
+                divBanda.appendChild(slider);
+                divBanda.appendChild(spanDb);
+
+                this.divBandas.appendChild(divBanda);
+
+                this.sliders.push(slider);
+                this.labels.push(spanDb);
+            }
+
+            this.divBotones = document.createElement('div');
+            this.divBotones.className = 'eq-botones';
+
+            this.btnOk       = document.createElement('button');
+            this.btnCancel   = document.createElement('button');
+            this.btnAudition = document.createElement('button');
+            this.btnHelp     = document.createElement('button');
+
+            this.btnOk.innerText       = 'OK';
+            this.btnCancel.innerText   = 'Cancel';
+            this.btnAudition.innerText = 'Audition';
+            this.btnHelp.innerText     = 'Help';
+
+            this.divBotones.appendChild(this.btnOk);
+            this.divBotones.appendChild(this.btnCancel);
+            this.divBotones.appendChild(this.btnAudition);
+            this.divBotones.appendChild(this.btnHelp);
+
+            this.contenedor.appendChild(this.divBandas);
+            this.contenedor.appendChild(this.divBotones);
+
+            this.appendChild(this.contenedor);
+        }
+
+        _formatDb(valor)
+        {
+            if (valor > 0) return '+' + valor + 'dB';
+            if (valor < 0) return valor + 'dB';
+            return '+0dB';
+        }
+
+        getData()
+        {
+            return this.datos;
+        }
+
+        setData(nuevosDatos)
+        {
+            this.datos = nuevosDatos;
+
+            for (let i = 0; i < this.datos.bandas.length; i++)
+            {
+                this.sliders[i].value  = this.datos.bandas[i].db;
+                this.labels[i].innerText = this._formatDb(this.datos.bandas[i].db);
+            }
+        }
+
+        onSliderChange(index)
+        {
+            this.datos.bandas[index].db  = parseInt(this.sliders[index].value);
+            this.labels[index].innerText = this._formatDb(this.datos.bandas[index].db);
+        }
+
+        connectedCallback()
+        {
+            console.log('Ecualizador agregado al DOM');
+
+            for (let i = 0; i < this.sliders.length; i++)
+            {
+                this.sliders[i].oninput = this.onSliderChange.bind(this, i);
+            }
+
+            this.btnOk.onclick       = this.onOkClick.bind(this);
+            this.btnCancel.onclick   = this.onCancelClick.bind(this);
+            this.btnAudition.onclick = this.onAuditionClick.bind(this);
+            this.btnHelp.onclick     = this.onHelpClick.bind(this);
+        }
+
+        disconnectedCallback()
+        {
+            console.log('Ecualizador removido del DOM');
+
+            for (let i = 0; i < this.sliders.length; i++)
+            {
+                this.sliders[i].oninput = null;
+            }
+
+            this.btnOk.onclick       = null;
+            this.btnCancel.onclick   = null;
+            this.btnAudition.onclick = null;
+            this.btnHelp.onclick     = null;
+        }
+
+        onOkClick()       { console.log('OK', this.getData()); }
+        onCancelClick()   { console.log('Cancel'); }
+        onAuditionClick() { console.log('Audition'); }
+        onHelpClick()     { console.log('Help'); }
+    }
+
+    customElements.define('x-ecualizador', Ecualizador);
+
+    function main()
+    {
+        let miEcualizador = new Ecualizador();
+        document.body.appendChild(miEcualizador);
+    }
+
+    window.onload = main;
+</script>
+</html>
+

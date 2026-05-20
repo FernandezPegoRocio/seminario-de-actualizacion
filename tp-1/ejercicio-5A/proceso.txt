@@ -1,0 +1,41 @@
+---------------------------------------------------------CONSIGNA---------------------------------------------------------
+
+Desarrolle un WebComponent tipo "Formulario" que permita cargar toda la información pertinente de la factura de AFIP 
+adjuntada. Este WebComponent deberá tener un botón "Generar factura" que deberá abrir una pestaña nueva con una 
+gráfica del diseño de la factura solicitada.
+
+--------------------------------------------------------PROCESO-----------------------------------------------------------
+
+---Para su solución se siguió el mismo lineamiento de la calculadora: un único archivo index.html con HTML, CSS y JS
+---Se construyó la clase FormularioFactura extendiendo HTMLElement, invocando super() como primera instrucción
+---Se definió this.data como objeto interno siguiendo la estructura del pizarrón:
+   + datosDelaEmpresa: razonSocial, domicilioComercial, condicionFrenteIVA, cuit, ingresosBrutos,
+                       fechaInicioActividades, puntoDeVenta, compNro
+   + tipoDeFactura: 'B'
+   + fechaEmision, fechaVto, periodoDesde, periodoHasta
+   + datosCliente: cuit, razonSocial, domicilio, condicionIVA, condicionVenta
+   + detalle: [] --> array de ítems
+---_crearInput(etiqueta, tipo) --> método auxiliar que construye un div con label e input
+---_crearSelect(etiqueta, opciones) --> método auxiliar que construye un div con label y select
+---_fila(grupos) --> método auxiliar que agrupa campos en una fila flexible
+---this.detalleFactura se construye como table con insertRow() e insertCell() siguiendo el pizarrón:
+   + el encabezado se arma con insertRow() y cada columna con insertCell() asignando innerText
+---agregarItemDetalle(item) --> método que inserta una nueva fila con insertRow() e insertCell()
+   siguiendo el patrón del pizarrón: row = insertRow(), col = insertCell(), col.appendChild(input)
+---_recalcularSubtotal(row) --> recalcula automáticamente el subtotal al editar cantidad, precio o bonificación
+---_recolectarDatos() --> recorre todos los inputs y selects del formulario y actualiza this.data
+---onAgregarItemClick() --> llama a agregarItemDetalle(null) para agregar una fila vacía a la tabla
+---onGenerarFacturaClick() --> llama a _recolectarDatos(), arma el HTML de la factura y lo abre en
+   pestaña nueva con window.open('', '_blank') y ventana.document.write(html)
+---En connectedCallback se vinculan btnAgregarItem y btnGenerar con .bind(this)
+---En disconnectedCallback se eliminan ambos eventos asignándoles null
+
+--------------------------------------------------------EJECUCIÓN---------------------------------------------------------
+
+---Abrir el archivo index.html en el navegador
+---Completar los campos de datos de la empresa, datos de la factura y datos del cliente
+---Presionar "+ Agregar ítem" para agregar filas en la tabla de detalle
+---Completar código, producto, cantidad, precio y bonificación de cada ítem
+---El subtotal de cada ítem se calcula automáticamente al completar los campos
+---Presionar "Generar Factura" para abrir en una pestaña nueva la factura con el diseño de AFIP
+

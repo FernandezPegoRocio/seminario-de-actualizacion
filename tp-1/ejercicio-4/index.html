@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Chat</title>
+</head>
+<body>
+</body>
+<style>
+    body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 90vh;
+        background-color: #f0f0f0;
+        font-family: Arial, sans-serif;
+    }
+</style>
+<script>
+    class ChatMensajes extends HTMLElement
+    {
+        constructor()
+        {
+            super();
+
+            this.mensajes = [];
+
+            this.contenedor  = document.createElement('div');
+            this.titulo      = document.createElement('h2');
+            this.divMensajes = document.createElement('div');
+
+            this.titulo.innerText         = 'Chat Messages';
+            this.contenedor.className     = 'chat-contenedor';
+            this.divMensajes.className    = 'chat-mensajes';
+
+            this.contenedor.appendChild(this.titulo);
+            this.contenedor.appendChild(this.divMensajes);
+            this.appendChild(this.contenedor);
+
+            this._inyectarEstilos();
+        }
+
+        agregarMensaje(avatar, texto, hora, lado)
+        {
+            let mensaje = { avatar, texto, hora, lado };
+            this.mensajes.push(mensaje);
+            this._renderMensaje(mensaje);
+        }
+
+        _renderMensaje(mensaje)
+        {
+            let divContainer = document.createElement('div');
+            divContainer.className = mensaje.lado === 'derecha'
+                ? 'msg-container darker'
+                : 'msg-container';
+
+            let img      = document.createElement('img');
+            img.src      = mensaje.avatar;
+            img.alt      = 'Avatar';
+            img.className = mensaje.lado === 'derecha' ? 'avatar right' : 'avatar';
+
+            let p        = document.createElement('p');
+            p.innerText  = mensaje.texto;
+
+            let span     = document.createElement('span');
+            span.innerText = mensaje.hora;
+            span.className = mensaje.lado === 'derecha' ? 'time-left' : 'time-right';
+
+            divContainer.appendChild(img);
+            divContainer.appendChild(p);
+            divContainer.appendChild(span);
+
+            this.divMensajes.appendChild(divContainer);
+        }
+
+        connectedCallback()
+        {
+            console.log('Chat agregado al DOM');
+        }
+
+        disconnectedCallback()
+        {
+            console.log('Chat removido del DOM');
+        }
+
+        _inyectarEstilos()
+        {
+            const style       = document.createElement('style');
+            style.textContent = `
+                .chat-contenedor {
+                    background-color: #ffffff;
+                    padding: 20px;
+                    border-radius: 16px;
+                    width: 400px;
+                    box-shadow: 0px 5px 15px #aaaaaa;
+                }
+                .chat-contenedor h2 {
+                    margin-bottom: 10px;
+                    font-size: 1.4em;
+                    color: #1a1a1a;
+                }
+                .chat-mensajes {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 10px;
+                }
+                .msg-container {
+                    border: 2px solid #dedede;
+                    background-color: #f1f1f1;
+                    border-radius: 5px;
+                    padding: 10px;
+                    overflow: hidden;
+                }
+                .msg-container.darker {
+                    border-color: #ccc;
+                    background-color: #ddd;
+                }
+                .msg-container p {
+                    margin: 0 0 6px 0;
+                    font-size: 1em;
+                    color: #1a1a1a;
+                }
+                .avatar {
+                    float: left;
+                    max-width: 60px;
+                    width: 100%;
+                    margin-right: 20px;
+                    border-radius: 50%;
+                }
+                .avatar.right {
+                    float: right;
+                    margin-left: 20px;
+                    margin-right: 0;
+                }
+                .time-right {
+                    float: right;
+                    color: #aaa;
+                    font-size: 0.85em;
+                }
+                .time-left {
+                    float: left;
+                    color: #999;
+                    font-size: 0.85em;
+                }
+            `;
+            document.head.appendChild(style);
+        }
+    }
+
+    customElements.define('x-chat', ChatMensajes);
+
+    function main()
+    {
+        let miChat = new ChatMensajes();
+        document.body.appendChild(miChat);
+
+        miChat.agregarMensaje('https://www.w3schools.com/w3images/bandmember.jpg', 'Hello. How are you today?',        '11:00', 'izquierda');
+        miChat.agregarMensaje('https://www.w3schools.com/w3images/avatar_g2.jpg',  'Hey! I\'m fine. Thanks for asking!', '11:01', 'derecha'   );
+        miChat.agregarMensaje('https://www.w3schools.com/w3images/bandmember.jpg', 'Sweet! So, what do you wanna do today?',                   '11:02', 'izquierda');
+        miChat.agregarMensaje('https://www.w3schools.com/w3images/avatar_g2.jpg',  'Nah, I dunno. Play soccer.. or learn more coding perhaps?', '11:05', 'derecha'  );
+    }
+
+    window.onload = main;
+</script>
+</html>
+

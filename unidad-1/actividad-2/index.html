@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Calculadora</title>
+</head>
+<body>
+</body>
+<script>
+
+class Calculadora extends HTMLElement
+{
+    constructor()
+    {
+        // clase base 
+        super();
+
+        // Definir todos los miembros del elemento
+        this.operacion = '';
+
+        this.display    = document.createElement('input');
+        this.tabla      = document.createElement('table');
+
+        // Botones numericos
+        this.btn7       = document.createElement('button');
+        this.btn8       = document.createElement('button');
+        this.btn9       = document.createElement('button');
+        this.btn4       = document.createElement('button');
+        this.btn5       = document.createElement('button');
+        this.btn6       = document.createElement('button');
+        this.btn3       = document.createElement('button');
+        this.btn2       = document.createElement('button');
+        this.btn1       = document.createElement('button');
+        this.btn0       = document.createElement('button');
+        this.btnPunto   = document.createElement('button');
+
+        // Botones operadores
+        this.btnSuma    = document.createElement('button');
+        this.btnResta   = document.createElement('button');
+        this.btnMult    = document.createElement('button');
+        this.btnDiv     = document.createElement('button');
+
+        // Botones accion
+        this.btnIgual   = document.createElement('button');
+        this.btnBorrar  = document.createElement('button');
+
+        // Preparación del display
+        this.display.type     = 'text';
+        this.display.readOnly = true;
+
+        // Preparación de botones numericos
+        this.btn7.innerText     = '7';
+        this.btn8.innerText     = '8';
+        this.btn9.innerText     = '9';
+        this.btn4.innerText     = '4';
+        this.btn5.innerText     = '5';
+        this.btn6.innerText     = '6';
+        this.btn3.innerText     = '3';
+        this.btn2.innerText     = '2';
+        this.btn1.innerText     = '1';
+        this.btn0.innerText     = '0';
+        this.btnPunto.innerText = '.';
+
+        // botones operadocion
+        this.btnSuma.innerText  = '+';
+        this.btnResta.innerText = '-';
+        this.btnMult.innerText  = '*';
+        this.btnDiv.innerText   = '/';
+
+        // botones acción igual y borrar
+        this.btnIgual.innerText  = '=';
+        this.btnBorrar.innerText = 'Borrar';
+
+        // Clases de CSS
+        this.btn7.className      = 'btn-numero';
+        this.btn8.className      = 'btn-numero';
+        this.btn9.className      = 'btn-numero';
+        this.btn4.className      = 'btn-numero';
+        this.btn5.className      = 'btn-numero';
+        this.btn6.className      = 'btn-numero';
+        this.btn3.className      = 'btn-numero';
+        this.btn2.className      = 'btn-numero';
+        this.btn1.className      = 'btn-numero';
+        this.btn0.className      = 'btn-numero';
+        this.btnPunto.className  = 'btn-numero';
+        this.btnSuma.className   = 'btn-operador';
+        this.btnResta.className  = 'btn-operador';
+        this.btnMult.className   = 'btn-operador';
+        this.btnDiv.className    = 'btn-operador';
+        this.btnIgual.className  = 'btn-igual';
+        this.btnBorrar.className = 'btn-borrar';
+
+        // Armar la tabla fila por fila
+        // Fila display
+        let fDisplay = document.createElement('tr');
+        let cDisplay = document.createElement('td');
+        cDisplay.colSpan = 4;
+        cDisplay.appendChild(this.display);
+        fDisplay.appendChild(cDisplay);
+
+        // Fila 1: 7 8 9 +
+        let f1 = document.createElement('tr');
+        f1.appendChild(this._celda(this.btn7));
+        f1.appendChild(this._celda(this.btn8));
+        f1.appendChild(this._celda(this.btn9));
+        f1.appendChild(this._celda(this.btnSuma));
+
+        // Fila 2: 4 5 6 -
+        let f2 = document.createElement('tr');
+        f2.appendChild(this._celda(this.btn4));
+        f2.appendChild(this._celda(this.btn5));
+        f2.appendChild(this._celda(this.btn6));
+        f2.appendChild(this._celda(this.btnResta));
+
+        // Fila 3: 3 2 1 *
+        let f3 = document.createElement('tr');
+        f3.appendChild(this._celda(this.btn3));
+        f3.appendChild(this._celda(this.btn2));
+        f3.appendChild(this._celda(this.btn1));
+        f3.appendChild(this._celda(this.btnMult));
+
+        // Fila 4: 0 . = /
+        let f4 = document.createElement('tr');
+        f4.appendChild(this._celda(this.btn0));
+        f4.appendChild(this._celda(this.btnPunto));
+        f4.appendChild(this._celda(this.btnIgual));
+        f4.appendChild(this._celda(this.btnDiv));
+
+        // Fila borrar
+        let fBorrar = document.createElement('tr');
+        let cBorrar = document.createElement('td');
+        cBorrar.colSpan = 4;
+        cBorrar.appendChild(this.btnBorrar);
+        fBorrar.appendChild(cBorrar);
+
+        // Agregar filas a la tabla
+        this.tabla.appendChild(fDisplay);
+        this.tabla.appendChild(f1);
+        this.tabla.appendChild(f2);
+        this.tabla.appendChild(f3);
+        this.tabla.appendChild(f4);
+        this.tabla.appendChild(fBorrar);
+
+        // Agregar la tabla al elemento
+        this.appendChild(this.tabla);
+
+     
+        this._inyectarEstilos();
+    }
+
+    // Método auxiliar para envolver un botón en una celda td
+    _celda(btn)
+    {
+        let td = document.createElement('td');
+        td.appendChild(btn);
+        return td;
+    }
+
+    // Manejadores de eventos 
+    onBtn7Click()     { this.onNumeroClick('7'); }
+    onBtn8Click()     { this.onNumeroClick('8'); }
+    onBtn9Click()     { this.onNumeroClick('9'); }
+    onBtn4Click()     { this.onNumeroClick('4'); }
+    onBtn5Click()     { this.onNumeroClick('5'); }
+    onBtn6Click()     { this.onNumeroClick('6'); }
+    onBtn3Click()     { this.onNumeroClick('3'); }
+    onBtn2Click()     { this.onNumeroClick('2'); }
+    onBtn1Click()     { this.onNumeroClick('1'); }
+    onBtn0Click()     { this.onNumeroClick('0'); }
+    onBtnPuntoClick() { this.onNumeroClick('.'); }
+    onBtnSumaClick()  { this.onOperadorClick('+'); }
+    onBtnRestaClick() { this.onOperadorClick('-'); }
+    onBtnMultClick()  { this.onOperadorClick('*'); }
+    onBtnDivClick()   { this.onOperadorClick('/'); }
+
+    onNumeroClick(valor)
+    {
+        this.operacion += valor;
+        this.actualizarDisplay();
+    }
+
+    onOperadorClick(valor)
+    {
+        this.operacion += valor;
+        this.actualizarDisplay();
+    }
+
+    onIgualClick()
+    {
+        this.operacion = eval(this.operacion);
+        this.actualizarDisplay();
+    }
+
+    onBorrarClick()
+    {
+        this.operacion = '';
+        this.actualizarDisplay();
+    }
+
+    actualizarDisplay()
+    {
+        this.display.value = this.operacion;
+    }
+
+    connectedCallback()
+    {
+        console.log('Calculadora agregada al DOM');
+
+        // Se usa .bind(this) para anclar el contexto de la clase al método que se pasa.
+        // Sin bind, JavaScript resuelve el 'this' según quien recibe el evento,
+        // y el botón no tiene las propiedades de la calculadora 
+        // bind(this) garantiza que el 'this' siempre sea el de la clase Calculadora
+        
+        this.btn7.onclick      = this.onBtn7Click.bind(this);
+        this.btn8.onclick      = this.onBtn8Click.bind(this);
+        this.btn9.onclick      = this.onBtn9Click.bind(this);
+        this.btn4.onclick      = this.onBtn4Click.bind(this);
+        this.btn5.onclick      = this.onBtn5Click.bind(this);
+        this.btn6.onclick      = this.onBtn6Click.bind(this);
+        this.btn3.onclick      = this.onBtn3Click.bind(this);
+        this.btn2.onclick      = this.onBtn2Click.bind(this);
+        this.btn1.onclick      = this.onBtn1Click.bind(this);
+        this.btn0.onclick      = this.onBtn0Click.bind(this);
+        this.btnPunto.onclick  = this.onBtnPuntoClick.bind(this);
+        this.btnSuma.onclick   = this.onBtnSumaClick.bind(this);
+        this.btnResta.onclick  = this.onBtnRestaClick.bind(this);
+        this.btnMult.onclick   = this.onBtnMultClick.bind(this);
+        this.btnDiv.onclick    = this.onBtnDivClick.bind(this);
+        this.btnIgual.onclick  = this.onIgualClick.bind(this);
+        this.btnBorrar.onclick = this.onBorrarClick.bind(this);
+    }
+
+    disconnectedCallback()
+    {
+        console.log('Calculadora removida del DOM');
+
+        this.btn7.onclick      = null;
+        this.btn8.onclick      = null;
+        this.btn9.onclick      = null;
+        this.btn4.onclick      = null;
+        this.btn5.onclick      = null;
+        this.btn6.onclick      = null;
+        this.btn3.onclick      = null;
+        this.btn2.onclick      = null;
+        this.btn1.onclick      = null;
+        this.btn0.onclick      = null;
+        this.btnPunto.onclick  = null;
+        this.btnSuma.onclick   = null;
+        this.btnResta.onclick  = null;
+        this.btnMult.onclick   = null;
+        this.btnDiv.onclick    = null;
+        this.btnIgual.onclick  = null;
+        this.btnBorrar.onclick = null;
+    }
+
+    _inyectarEstilos()
+    {
+        const style = document.createElement('style');
+        style.textContent = `
+            body {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                height: 90vh;
+                background-color: #f0f0f0;
+            }
+            table {
+                border-collapse: collapse;
+                background-color: #F5F5F5;
+                padding: 20px;
+                border-radius: 16px;
+            }
+            td { padding: 10px; }
+            input[type="text"] {
+                width: 100%;
+                text-align: right;
+                font-size: 1.5em;
+                padding: 10px;
+                background-color: white;
+                border: none;
+                border-radius: 10px;
+                box-sizing: border-box;
+            }
+            button {
+                width: 70px;
+                height: 70px;
+                font-size: 1.2em;
+                font-family: Arial, sans-serif;
+                font-weight: bold;
+                color: white;
+                border: none;
+                border-radius: 12px;
+                box-shadow: 0px 5px #1a1a1a;
+                cursor: pointer;
+            }
+            .btn-numero   { background-color: #4a90d9; }
+            .btn-operador { background-color: #ABD936; }
+            .btn-igual    { background-color: #F0C800; }
+            .btn-borrar {
+                background-color: red;
+                box-shadow: 0px 5px #BB3E22;
+                width: 100%;
+                height: 30px;
+                border-radius: 6px;
+            }
+        `;
+        document.head.appendChild(style);
+    }
+}
+
+customElements.define('x-calculadora', Calculadora);
+
+function main()
+{
+    let miCalculadora = new Calculadora();
+    document.body.appendChild(miCalculadora);
+}
+
+window.onload = main;
+
+</script>
+</html>

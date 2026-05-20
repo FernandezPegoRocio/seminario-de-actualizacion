@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<body>
+
+    <table>
+
+        <tr>
+            <td colspan="4">
+                <input type="text" id="display" readonly>
+            </td>
+        </tr>
+
+        <tr>
+            <td><button class="btn-numero"onclick="agregarNumero(7)">7</button></td>
+            <td><button class="btn-numero"onclick="agregarNumero(8)">8</button></td>
+            <td><button class="btn-numero"onclick="agregarNumero(9)">9</button></td>
+            <td><button class="btn-operador"onclick="agregarOperador('+')">+</button></td>
+        </tr>
+
+        <tr>
+            <td><button class="btn-numero"onclick="agregarNumero(4)">4</button></td>
+            <td><button class="btn-numero"onclick="agregarNumero(5)">5</button></td>
+            <td><button class="btn-numero"onclick="agregarNumero(6)">6</button></td>
+            <td><button class="btn-operador"onclick="agregarOperador('-')">-</button></td>
+        </tr>
+
+        <tr>
+            <td><button class="btn-numero"onclick="agregarNumero(3)">3</button></td>
+            <td><button class="btn-numero"onclick="agregarNumero(2)">2</button></td>
+            <td><button class="btn-numero"onclick="agregarNumero(1)">1</button></td>
+            <td><button class="btn-operador"onclick="agregarOperador('*')">*</button></td>
+        </tr>
+
+        <tr>
+            <td><button class="btn-numero"onclick="agregarNumero(0)">0</button></td>
+            <td><button class="btn-numero" onclick="agregarNumero('.')">.</button></td>
+            <td><button class="btn-igual"onclick="calcular()">=</button></td>
+            <td><button class="btn-operador"onclick="agregarOperador('/')">/</button></td>
+        </tr>
+
+        <tr>
+            <td colspan="4"><button class="btn-borrar"onclick="borrar()">Borrar</button></td>
+        </tr>
+
+    </table>
+
+    <script src="script.js"></script>
+</body>
+</html>

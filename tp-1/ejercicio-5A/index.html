@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Factura AFIP</title>
+</head>
+<body>
+</body>
+<style>
+    body {
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        padding: 30px;
+        background-color: #f0f0f0;
+        font-family: Arial, sans-serif;
+    }
+    .form-contenedor {
+        background-color: #F5F5F5;
+        padding: 30px;
+        border-radius: 16px;
+        width: 700px;
+        box-shadow: 0px 5px 15px #aaaaaa;
+    }
+    .form-contenedor h2 {
+        margin-bottom: 20px;
+        font-size: 1.4em;
+        color: #1a1a1a;
+    }
+    .form-seccion {
+        font-weight: bold;
+        margin: 16px 0 8px 0;
+        color: #4a90d9;
+        border-bottom: 1px solid #ccc;
+        padding-bottom: 4px;
+    }
+    .form-fila {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 10px;
+        flex-wrap: wrap;
+    }
+    .form-grupo {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        min-width: 150px;
+    }
+    .form-grupo label {
+        font-size: 0.8em;
+        color: #555;
+        margin-bottom: 3px;
+    }
+    .form-grupo input, .form-grupo select {
+        padding: 7px;
+        font-size: 0.95em;
+        border-radius: 8px;
+        border: 1px solid #ccc;
+        font-family: Arial, sans-serif;
+    }
+    .detalle-factura {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+        font-size: 0.85em;
+    }
+    .detalle-factura th {
+        background-color: #4a90d9;
+        color: white;
+        padding: 6px;
+        text-align: left;
+    }
+    .detalle-factura td {
+        padding: 6px;
+        border-bottom: 1px solid #ddd;
+    }
+    .detalle-factura td input {
+        width: 100%;
+        padding: 4px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 0.85em;
+        box-sizing: border-box;
+    }
+    .btn-agregar {
+        margin-top: 8px;
+        padding: 6px 14px;
+        background-color: #ABD936;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-weight: bold;
+        cursor: pointer;
+        box-shadow: 0px 3px #1a1a1a;
+        font-family: Arial, sans-serif;
+    }
+    .btn-generar {
+        margin-top: 20px;
+        width: 100%;
+        height: 50px;
+        font-size: 1.2em;
+        font-family: Arial, sans-serif;
+        font-weight: bold;
+        color: white;
+        background-color: #4a90d9;
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0px 5px #1a1a1a;
+        cursor: pointer;
+    }
+</style>
+<script>
+
+    class FormularioFactura extends HTMLElement
+    {
+        constructor()
+        {
+            super();
+
+            this.data = {
+                datosDelaEmpresa: {
+                    razonSocial:              '',
+                    domicilioComercial:       '',
+                    condicionFrenteIVA:       'IVA Responsable Inscripto',
+                    cuit:                     '',
+                    ingresosBrutos:           '',
+                    fechaInicioActividades:   '',
+                    puntoDeVenta:             '',
+                    compNro:                  ''
+                },
+                tipoDeFactura:  'B',
+                fechaEmision:   '',
+                fechaVto:       '',
+                periodoDesde:   '',
+                periodoHasta:   '',
+                datosCliente: {
+                    cuit:             '',
+                    razonSocial:      '',
+                    domicilio:        '',
+                    condicionIVA:     'IVA Sujeto Exento',
+                    condicionVenta:   'Cuenta Corriente'
+                },
+                detalle: []
+            };
+
+            this.contenedor       = document.createElement('div');
+            this.contenedor.className = 'form-contenedor';
+
+            this.titulo           = document.createElement('h2');
+            this.titulo.innerText = 'Carga de Factura AFIP';
+
+            this.secEmpresa           = document.createElement('div');
+            this.secEmpresa.className = 'form-seccion';
+            this.secEmpresa.innerText = 'Datos de la Empresa';
+
+            this.inputRazonSocial       = this._crearInput('Razón Social');
+            this.inputDomicilio         = this._crearInput('Domicilio Comercial');
+            this.inputCuitEmpresa       = this._crearInput('CUIT');
+            this.inputIngresosBrutos    = this._crearInput('Ingresos Brutos');
+            this.inputFechaInicio       = this._crearInput('Fecha Inicio Actividades', 'date');
+            this.inputPuntoVenta        = this._crearInput('Punto de Venta');
+            this.inputCompNro           = this._crearInput('Comp. Nro');
+            this.selectCondicionEmpresa = this._crearSelect('Condición frente al IVA', [
+                'IVA Responsable Inscripto',
+                'IVA Sujeto Exento',
+                'Monotributo'
+            ]);
+
+            this.secFactura           = document.createElement('div');
+            this.secFactura.className = 'form-seccion';
+            this.secFactura.innerText = 'Datos de la Factura';
+
+            this.selectTipoFactura = this._crearSelect('Tipo de Factura', ['A', 'B', 'C']);
+            this.inputFechaEmision = this._crearInput('Fecha de Emisión', 'date');
+            this.inputFechaVto     = this._crearInput('Fecha Vto. para el pago', 'date');
+            this.inputPeriodoDesde = this._crearInput('Período Desde', 'date');
+            this.inputPeriodoHasta = this._crearInput('Período Hasta', 'date');
+
+            this.secCliente           = document.createElement('div');
+            this.secCliente.className = 'form-seccion';
+            this.secCliente.innerText = 'Datos del Cliente';
+
+            this.inputCuitCliente       = this._crearInput('CUIT Cliente');
+            this.inputRazonCliente      = this._crearInput('Apellido y Nombre / Razón Social');
+            this.inputDomicilioCliente  = this._crearInput('Domicilio');
+            this.selectCondicionCliente = this._crearSelect('Condición frente al IVA', [
+                'IVA Sujeto Exento',
+                'IVA Responsable Inscripto',
+                'Monotributo'
+            ]);
+            this.selectCondicionVenta   = this._crearSelect('Condición de Venta', [
+                'Cuenta Corriente',
+                'Contado',
+                'Tarjeta'
+            ]);
+
+            this.secDetalle           = document.createElement('div');
+            this.secDetalle.className = 'form-seccion';
+            this.secDetalle.innerText = 'Detalle de Productos / Servicios';
+
+            this.detalleFactura           = document.createElement('table');
+            this.detalleFactura.className = 'detalle-factura';
+
+            let filaEncabezado = this.detalleFactura.insertRow();
+            ['Código', 'Producto/Servicio', 'Cantidad', 'U. Medida', 'Precio Unit.', '% Bonif.', 'Subtotal'].forEach(titulo => {
+                let col       = filaEncabezado.insertCell();
+                col.innerText = titulo;
+                col.style.fontWeight    = 'bold';
+                col.style.background    = '#4a90d9';
+                col.style.color         = 'white';
+                col.style.padding       = '6px';
+            });
+
+            this.btnAgregarItem           = document.createElement('button');
+            this.btnAgregarItem.innerText = '+ Agregar ítem';
+            this.btnAgregarItem.className = 'btn-agregar';
+
+            this.btnGenerar           = document.createElement('button');
+            this.btnGenerar.innerText = 'Generar Factura';
+            this.btnGenerar.className = 'btn-generar';
+
+            // Armar estructura
+            this.contenedor.appendChild(this.titulo);
+
+            this.contenedor.appendChild(this.secEmpresa);
+            this.contenedor.appendChild(this._fila([this.inputRazonSocial,    this.inputDomicilio]));
+            this.contenedor.appendChild(this._fila([this.inputCuitEmpresa,    this.inputIngresosBrutos, this.inputFechaInicio]));
+            this.contenedor.appendChild(this._fila([this.selectCondicionEmpresa, this.inputPuntoVenta,  this.inputCompNro]));
+
+            this.contenedor.appendChild(this.secFactura);
+            this.contenedor.appendChild(this._fila([this.selectTipoFactura,   this.inputFechaEmision,   this.inputFechaVto]));
+            this.contenedor.appendChild(this._fila([this.inputPeriodoDesde,   this.inputPeriodoHasta]));
+
+            this.contenedor.appendChild(this.secCliente);
+            this.contenedor.appendChild(this._fila([this.inputCuitCliente,    this.inputRazonCliente]));
+            this.contenedor.appendChild(this._fila([this.inputDomicilioCliente, this.selectCondicionCliente, this.selectCondicionVenta]));
+
+            this.contenedor.appendChild(this.secDetalle);
+            this.contenedor.appendChild(this.detalleFactura);
+            this.contenedor.appendChild(this.btnAgregarItem);
+            this.contenedor.appendChild(this.btnGenerar);
+
+            this.appendChild(this.contenedor);
+        }
+
+        _crearInput(etiqueta, tipo = 'text')
+        {
+            let grupo       = document.createElement('div');
+            grupo.className = 'form-grupo';
+            let label       = document.createElement('label');
+            label.innerText = etiqueta;
+            let input       = document.createElement('input');
+            input.type      = tipo;
+            grupo.appendChild(label);
+            grupo.appendChild(input);
+            return grupo;
+        }
+
+        _crearSelect(etiqueta, opciones)
+        {
+            let grupo       = document.createElement('div');
+            grupo.className = 'form-grupo';
+            let label       = document.createElement('label');
+            label.innerText = etiqueta;
+            let select      = document.createElement('select');
+            opciones.forEach(op => {
+                let option       = document.createElement('option');
+                option.value     = op;
+                option.innerText = op;
+                select.appendChild(option);
+            });
+            grupo.appendChild(label);
+            grupo.appendChild(select);
+            return grupo;
+        }
+
+        _fila(grupos)
+        {
+            let fila       = document.createElement('div');
+            fila.className = 'form-fila';
+            grupos.forEach(g => fila.appendChild(g));
+            return fila;
+        }
+
+        _obtenerInput(grupo)
+        {
+            return grupo.querySelector('input, select');
+        }
+
+        // Método agregarItemDetalle siguiendo exactamente el pizarrón:
+        // row = this.detalleFactura.insertRow()
+        // col = row.insertCell()
+        // col.appendChild / col.innerText = item
+        agregarItemDetalle(item)
+        {
+            let row = this.detalleFactura.insertRow();
+
+            ['codigo', 'producto', 'cantidad', 'unidadMedida', 'precioUnit', 'bonif', 'subtotal'].forEach((campo, i) => {
+                let col   = row.insertCell();
+                let input = document.createElement('input');
+                input.type  = 'text';
+                input.value = item ? item[campo] : (i === 2 ? '1' : i === 5 ? '0' : '');
+                input.oninput = this._recalcularSubtotal.bind(this, row);
+                col.appendChild(input);
+            });
+        }
+
+        _recalcularSubtotal(row)
+        {
+            let inputs   = row.querySelectorAll('input');
+            let cantidad = parseFloat(inputs[2].value) || 0;
+            let precio   = parseFloat(inputs[4].value) || 0;
+            let bonif    = parseFloat(inputs[5].value) || 0;
+            inputs[6].value = (cantidad * precio * (1 - bonif / 100)).toFixed(2);
+        }
+
+        _recolectarDatos()
+        {
+            this.data.datosDelaEmpresa.razonSocial            = this._obtenerInput(this.inputRazonSocial).value;
+            this.data.datosDelaEmpresa.domicilioComercial     = this._obtenerInput(this.inputDomicilio).value;
+            this.data.datosDelaEmpresa.cuit                   = this._obtenerInput(this.inputCuitEmpresa).value;
+            this.data.datosDelaEmpresa.ingresosBrutos         = this._obtenerInput(this.inputIngresosBrutos).value;
+            this.data.datosDelaEmpresa.fechaInicioActividades = this._obtenerInput(this.inputFechaInicio).value;
+            this.data.datosDelaEmpresa.puntoDeVenta           = this._obtenerInput(this.inputPuntoVenta).value;
+            this.data.datosDelaEmpresa.compNro                = this._obtenerInput(this.inputCompNro).value;
+            this.data.datosDelaEmpresa.condicionFrenteIVA     = this._obtenerInput(this.selectCondicionEmpresa).value;
+            this.data.tipoDeFactura                           = this._obtenerInput(this.selectTipoFactura).value;
+            this.data.fechaEmision                            = this._obtenerInput(this.inputFechaEmision).value;
+            this.data.fechaVto                                = this._obtenerInput(this.inputFechaVto).value;
+            this.data.periodoDesde                            = this._obtenerInput(this.inputPeriodoDesde).value;
+            this.data.periodoHasta                            = this._obtenerInput(this.inputPeriodoHasta).value;
+            this.data.datosCliente.cuit                       = this._obtenerInput(this.inputCuitCliente).value;
+            this.data.datosCliente.razonSocial                = this._obtenerInput(this.inputRazonCliente).value;
+            this.data.datosCliente.domicilio                  = this._obtenerInput(this.inputDomicilioCliente).value;
+            this.data.datosCliente.condicionIVA               = this._obtenerInput(this.selectCondicionCliente).value;
+            this.data.datosCliente.condicionVenta             = this._obtenerInput(this.selectCondicionVenta).value;
+
+            this.data.detalle = [];
+            let rows = this.detalleFactura.querySelectorAll('tr');
+            rows.forEach((row, index) => {
+                if (index === 0) return; // saltar encabezado
+                let inputs = row.querySelectorAll('input');
+                this.data.detalle.push({
+                    codigo:       inputs[0].value,
+                    producto:     inputs[1].value,
+                    cantidad:     inputs[2].value,
+                    unidadMedida: inputs[3].value,
+                    precioUnit:   inputs[4].value,
+                    bonif:        inputs[5].value,
+                    subtotal:     inputs[6].value
+                });
+            });
+        }
+
+        onAgregarItemClick()
+        {
+            this.agregarItemDetalle(null);
+        }
+
+        onGenerarFacturaClick()
+        {
+            this._recolectarDatos();
+
+            let d        = this.data;
+            let subtotal = d.detalle.reduce((acc, i) => acc + parseFloat(i.subtotal || 0), 0);
+
+            let filas = d.detalle.map(i => `
+                <tr>
+                    <td>${i.codigo}</td>
+                    <td>${i.producto}</td>
+                    <td>${i.cantidad}</td>
+                    <td>${i.unidadMedida}</td>
+                    <td>${i.precioUnit}</td>
+                    <td>${i.bonif}</td>
+                    <td>0,00</td>
+                    <td>${parseFloat(i.subtotal).toFixed(2)}</td>
+                </tr>`).join('');
+
+            let html = `<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Factura</title>
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; margin: 30px; color: #1a1a1a; }
+        .factura { border: 2px solid #000; padding: 10px; max-width: 750px; margin: auto; }
+        .header-top { background-color: #1a1a1a; color: white; text-align: center; font-weight: bold; padding: 6px; font-size: 14px; }
+        .header-medio { display: flex; border-bottom: 1px solid #000; }
+        .header-izq { width: 60%; padding: 10px; border-right: 1px solid #000; }
+        .header-der { width: 40%; padding: 10px; }
+        .tipo-factura { border: 2px solid #000; text-align: center; font-size: 28px; font-weight: bold; width: 50px; height: 50px; line-height: 50px; margin-bottom: 4px; }
+        .periodo { border-top: 1px solid #000; border-bottom: 1px solid #000; padding: 4px 10px; display: flex; gap: 20px; }
+        .cliente { padding: 8px 10px; border-bottom: 1px solid #000; }
+        table { width: 100%; border-collapse: collapse; margin-top: 8px; }
+        th { background-color: #ddd; border: 1px solid #aaa; padding: 4px; text-align: center; }
+        td { border: 1px solid #aaa; padding: 4px; text-align: center; }
+        .totales { text-align: right; padding: 10px; border-top: 1px solid #000; }
+        .footer { display: flex; justify-content: space-between; border-top: 2px solid #000; padding-top: 6px; margin-top: 10px; font-size: 11px; }
+    </style>
+</head>
+<body>
+<div class="factura">
+    <div class="header-top">ORIGINAL</div>
+    <div class="header-medio">
+        <div class="header-izq">
+            <p><strong>Razón Social:</strong> ${d.datosDelaEmpresa.razonSocial}</p>
+            <p><strong>Domicilio Comercial:</strong> ${d.datosDelaEmpresa.domicilioComercial}</p>
+            <p><strong>Condición frente al IVA:</strong> ${d.datosDelaEmpresa.condicionFrenteIVA}</p>
+        </div>
+        <div class="header-der" style="text-align:center;">
+            <div class="tipo-factura">${d.tipoDeFactura}</div>
+            <p style="font-size:18px; font-weight:bold;">FACTURA</p>
+            <p><strong>Punto de Venta:</strong> ${d.datosDelaEmpresa.puntoDeVenta} &nbsp; <strong>Comp. Nro:</strong> ${d.datosDelaEmpresa.compNro}</p>
+            <p><strong>Fecha de Emisión:</strong> ${d.fechaEmision}</p>
+            <p><strong>CUIT:</strong> ${d.datosDelaEmpresa.cuit}</p>
+            <p><strong>Ingresos Brutos:</strong> ${d.datosDelaEmpresa.ingresosBrutos}</p>
+            <p><strong>Fecha Inicio Actividades:</strong> ${d.datosDelaEmpresa.fechaInicioActividades}</p>
+        </div>
+    </div>
+    <div class="periodo">
+        <span><strong>Período Desde:</strong> ${d.periodoDesde}</span>
+        <span><strong>Hasta:</strong> ${d.periodoHasta}</span>
+        <span><strong>Fecha Vto. pago:</strong> ${d.fechaVto}</span>
+    </div>
+    <div class="cliente">
+        <p><strong>CUIT:</strong> ${d.datosCliente.cuit} &nbsp;&nbsp; <strong>Razón Social:</strong> ${d.datosCliente.razonSocial}</p>
+        <p><strong>Condición frente al IVA:</strong> ${d.datosCliente.condicionIVA} &nbsp;&nbsp; <strong>Domicilio:</strong> ${d.datosCliente.domicilio}</p>
+        <p><strong>Condición de venta:</strong> ${d.datosCliente.condicionVenta}</p>
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>Código</th><th>Producto / Servicio</th><th>Cantidad</th>
+                <th>U. Medida</th><th>Precio Unit.</th><th>% Bonif.</th>
+                <th>Imp. Bonif.</th><th>Subtotal</th>
+            </tr>
+        </thead>
+        <tbody>${filas}</tbody>
+    </table>
+    <div class="totales">
+        <p><strong>Subtotal: $</strong> ${subtotal.toFixed(2)}</p>
+        <p><strong>Importe Otros Tributos: $</strong> 0,00</p>
+        <p><strong>Importe Total: $</strong> ${subtotal.toFixed(2)}</p>
+    </div>
+    <div class="footer">
+        <span><strong>AFIP</strong> Comprobante Autorizado &nbsp; Pág. 1/1</span>
+        <span><strong>CAE N°:</strong> &nbsp;&nbsp;&nbsp; <strong>Fecha de Vto. de CAE:</strong></span>
+    </div>
+</div>
+</body></html>`;
+
+            let ventana = window.open('', '_blank');
+            ventana.document.write(html);
+            ventana.document.close();
+        }
+
+        connectedCallback()
+        {
+            console.log('FormularioFactura agregado al DOM');
+            this.btnAgregarItem.onclick = this.onAgregarItemClick.bind(this);
+            this.btnGenerar.onclick     = this.onGenerarFacturaClick.bind(this);
+        }
+
+        disconnectedCallback()
+        {
+            console.log('FormularioFactura removido del DOM');
+            this.btnAgregarItem.onclick = null;
+            this.btnGenerar.onclick     = null;
+        }
+    }
+
+    customElements.define('x-formulario-factura', FormularioFactura);
+
+    function main()
+    {
+        let miFormulario = new FormularioFactura();
+        document.body.appendChild(miFormulario);
+    }
+
+    window.onload = main;
+
+</script>
+</html>
+
