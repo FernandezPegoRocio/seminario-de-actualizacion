@@ -219,7 +219,7 @@
             this.btnGenerar.innerText = 'Generar Factura';
             this.btnGenerar.className = 'btn-generar';
 
-            // Armar estructura
+         
             this.contenedor.appendChild(this.titulo);
 
             this.contenedor.appendChild(this.secEmpresa);
@@ -287,10 +287,7 @@
             return grupo.querySelector('input, select');
         }
 
-        // Método agregarItemDetalle siguiendo exactamente el pizarrón:
-        // row = this.detalleFactura.insertRow()
-        // col = row.insertCell()
-        // col.appendChild / col.innerText = item
+
         agregarItemDetalle(item)
         {
             let row = this.detalleFactura.insertRow();
