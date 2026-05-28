@@ -1,0 +1,45 @@
+--------------------------------------------------------PROCESO-----------------------------------------------------------
+
+---Se extendió el WebComponent del ejercicio 6 con la misma estructura base
+
+---Se agregó this.enCelsius = true --> variable de estado que controla la unidad de temperatura activa
+
+---Se agregó en el constructor:
+
++ this.btnConvertir --> botón "Convertir a °F" ubicado en la barra del título
+
++ this.spanTitulo   --> span que contiene el texto del título, para acomodar el botón en la misma fila
+
+---Los labels de temperatura ya no incluyen la unidad hardcodeada:
+
++ la unidad se agrega dinámicamente en _construirTabla() según this.enCelsius
+
+---_celsiusAFahrenheit(c) --> convierte un valor aplicando la fórmula c × 9/5 + 32
+
+---_obtenerFilasActuales() --> devuelve las filas con los valores en la unidad activa:
+
++ si this.enCelsius es true devuelve this.datosCelsius.filas sin modificar
+
++ si es false recorre las filas de tipo 'temperatura' y genera un nuevo array con los valores convertidos
+
++ las filas de tipo 'precipitacion', 'diasPrecip', 'sol' y 'humedad' se devuelven sin cambios
+
+---_colorCelda() fue actualizado --> siempre normaliza el valor a °C internamente antes de asignar el color:
+
++ si !this.enCelsius aplica (valor - 32) × 5/9 para obtener el equivalente en °C
+
++ así la escala de colores es consistente independientemente de la unidad mostrada
+
+---onConvertirClick() --> alterna this.enCelsius, actualiza el texto del botón y llama a _construirTabla()
+
+---getPromediosTemperaturas() --> actualizado para trabajar con la unidad activa:
+
++ llama a _obtenerFilasActuales() para obtener los valores en la unidad correcta
+
++ agrega la unidad activa entre paréntesis como parte de la clave del objeto resultado
+
+---En connectedCallback se vincula btnConvertir.onclick con .bind(this)
+
+---En disconnectedCallback se libera btnConvertir.onclick asignándole null
+
+---En main() se instancia el componente, se agrega al body y se llama a getPromediosTemperaturas() en consola

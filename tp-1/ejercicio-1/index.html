@@ -1,72 +1,231 @@
 <!DOCTYPE html>
+
 <html lang="es">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Saludo</title>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Saludo</title>
+
 </head>
+
 <body>
-    <div class="contenedor">
-        <h1>Buenos dias!!</h1>
-        <label for="inputNombre">Nombre:</label>
-        <input type="text" id="inputNombre" placeholder="Ingresá tu nombre">
-        <label for="inputApellido">Apellido:</label>
-        <input type="text" id="inputApellido" placeholder="Ingresá tu apellido">
-        <button onclick="mostrarSaludo()">Saludar</button>
-        <p id="resultado"></p>
-    </div>
+
 </body>
+
 <style>
-    body {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 90vh;
-        background-color: #f0f0f0;
-    }
-    .contenedor {
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-        background-color: #F5F5F5;
-        padding: 30px;
-        border-radius: 16px;
-        font-family: Arial, sans-serif;
-    }
-    input {
-        padding: 8px;
-        font-size: 1em;
-        border-radius: 8px;
-        border: 1px solid #ccc;
-    }
-    button {
-        width: 100%;
-        height: 50px;
-        font-size: 1.2em;
-        font-family: Arial, sans-serif;
-        font-weight: bold;
-        color: white;
-        background-color: #4a90d9;
-        border: none;
-        border-radius: 12px;
-        box-shadow: 0px 5px #1a1a1a;
-        cursor: pointer;
-    }
-    #resultado {
-        font-size: 1.3em;
-        font-weight: bold;
-        margin-top: 10px;
-    }
+
+body {
+
+display: flex;
+
+justify-content: center;
+
+align-items: center;
+
+height: 90vh;
+
+background-color: #f0f0f0;
+
+}
+
+.contenedor {
+
+display: flex;
+
+flex-direction: column;
+
+gap: 10px;
+
+background-color: #F5F5F5;
+
+padding: 30px;
+
+border-radius: 16px;
+
+font-family: Arial, sans-serif;
+
+}
+
+input {
+
+padding: 8px;
+
+font-size: 1em;
+
+border-radius: 8px;
+
+border: 1px solid #ccc;
+
+}
+
+button {
+
+width: 100%;
+
+height: 50px;
+
+font-size: 1.2em;
+
+font-family: Arial, sans-serif;
+
+font-weight: bold;
+
+color: white;
+
+background-color: #4a90d9;
+
+border: none;
+
+border-radius: 12px;
+
+box-shadow: 0px 5px #1a1a1a;
+
+cursor: pointer;
+
+}
+
+#resultado {
+
+font-size: 1.3em;
+
+font-weight: bold;
+
+margin-top: 10px;
+
+}
+
 </style>
+
 <script>
-    function mostrarSaludo() {
-        let nombre   = document.getElementById('inputNombre').value;
-        let apellido = document.getElementById('inputApellido').value;
 
-        let apellidoFormateado = apellido.toUpperCase();
-        let nombreFormateado   = nombre.charAt(0).toUpperCase() + nombre.slice(1).toLowerCase();
+class Saludador extends HTMLElement
 
-        document.getElementById('resultado').textContent = '¡Buenos días ' + apellidoFormateado + ', ' + nombreFormateado + '!';
-    }
+{
+
+constructor()
+
+{
+
+super();
+
+this.contenedor = document.createElement('div');
+
+this.contenedor.className = 'contenedor';
+
+this.mainTitle          = document.createElement('h1');
+
+this.mainTitle.innerText = 'Buenos dias!!';
+
+this.labelNombre          = document.createElement('label');
+
+this.labelNombre.htmlFor  = 'inputNombre';
+
+this.labelNombre.innerText = 'Nombre:';
+
+this.inputNombre             = document.createElement('input');
+
+this.inputNombre.type        = 'text';
+
+this.inputNombre.id          = 'inputNombre';
+
+this.inputNombre.placeholder = 'Ingresá tu nombre';
+
+this.labelApellido          = document.createElement('label');
+
+this.labelApellido.htmlFor  = 'inputApellido';
+
+this.labelApellido.innerText = 'Apellido:';
+
+this.inputApellido             = document.createElement('input');
+
+this.inputApellido.type        = 'text';
+
+this.inputApellido.id          = 'inputApellido';
+
+this.inputApellido.placeholder = 'Ingresá tu apellido';
+
+this.btnSaludar          = document.createElement('button');
+
+this.btnSaludar.innerText = 'Saludar';
+
+this.resultado    = document.createElement('p');
+
+this.resultado.id = 'resultado';
+
+this.contenedor.appendChild(this.mainTitle);
+
+this.contenedor.appendChild(this.labelNombre);
+
+this.contenedor.appendChild(this.inputNombre);
+
+this.contenedor.appendChild(this.labelApellido);
+
+this.contenedor.appendChild(this.inputApellido);
+
+this.contenedor.appendChild(this.btnSaludar);
+
+this.contenedor.appendChild(this.resultado);
+
+this.appendChild(this.contenedor);
+
+}
+
+mostrarSaludo()
+
+{
+
+let nombre   = this.inputNombre.value;
+
+let apellido = this.inputApellido.value;
+
+let apellidoFormateado = apellido.toUpperCase();
+
+let nombreFormateado   = nombre.charAt(0).toUpperCase() + nombre.slice(1).toLowerCase();
+
+this.resultado.textContent = '¡Buenos días ' + apellidoFormateado + ', ' + nombreFormateado + '!';
+
+}
+
+connectedCallback()
+
+{
+
+console.log('Saludador agregado al DOM');
+
+this.btnSaludar.onclick = this.mostrarSaludo.bind(this);
+
+}
+
+disconnectedCallback()
+
+{
+
+console.log('Saludador removido del DOM');
+
+this.btnSaludar.onclick = null;
+
+}
+
+}
+
+customElements.define('x-saludador', Saludador);
+
+function main()
+
+{
+
+let miSaludador = new Saludador();
+
+document.body.appendChild(miSaludador);
+
+}
+
+window.onload = main;
+
 </script>
+
 </html>

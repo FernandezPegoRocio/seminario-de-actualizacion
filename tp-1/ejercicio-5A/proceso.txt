@@ -39,3 +39,12 @@ gráfica del diseño de la factura solicitada.
 ---El subtotal de cada ítem se calcula automáticamente al completar los campos
 ---Presionar "Generar Factura" para abrir en una pestaña nueva la factura con el diseño de AFIP
 
+________________________________________CORRECCIONES APLICADAS SEGÚN DEVOLUCIÓN DEL DOCENTE__________________________________________
+
+--- Punto a corregir sobre la versión anterior: el HTML completo de la factura estaba incrustado dentro del método onGenerarFacturaClick(),
+mezclando la responsabilidad de recolectar datos con la de construir la representación visual.
+
+Corrección: se extrajo todo el bloque de HTML a una función aislada generarHTMLFactura(data) declarada
+fuera de la clase. Recibe en data todo lo necesario para construir el string y lo devuelve completo.
+onGenerarFacturaClick() quedó reducido a tres responsabilidades: llamar a _recolectarDatos(),
+obtener el string con generarHTMLFactura(this.data) y pasarlo como argumento a ventana.document.write().

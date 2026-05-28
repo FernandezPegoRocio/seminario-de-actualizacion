@@ -22,3 +22,26 @@ la mayúscula en la primera letra. Independientemente de cómo sea recibidas las
 ---Si la fecha es válida --> se muestra el mensaje de éxito en verde
 ---Si la fecha es inválida --> se muestra el mensaje de error en rojo indicando el número de reintento
 ---El campo se limpia automáticamente para volver a intentarlo
+
+________________________________________CORRECCIONES APLICADAS SEGÚN DEVOLUCIÓN DEL DOCENTE__________________________________________
+
+El código funciona pero no estaba implementado como WebComponent:
+
+--- corregir: el código HTML estaba escrito directamente en el <body> y la lógica en funciones globales sueltas.
+
+Corrección: se creó la clase Saludador extendiendo HTMLElement con super() como primera instrucción.
+
+--- corregir: el <body> debía estar completamente vacío y todo construirse mediante clases.
+
+Corrección: el <body> quedó vacío. Todo el HTML fue migrado al constructor() usando document.createElement(),
+asignando className, innerText y placeholder sobre cada elemento creado.
+
+--- corregir: mostrarSaludo() era una función global no vinculada a ninguna clase.
+
+Corrección: pasó a ser un método de la clase Saludador, operando sobre this.inputNombre,
+this.inputApellido y this.resultado en lugar de usar getElementById.
+
+--- corregir: el botón usaba onclick="mostrarSaludo()" hardcodeado en el HTML.
+
+Corrección: el evento se vincula en connectedCallback con .bind(this) y se libera en disconnectedCallback
+asignándole null, siguiendo el patrón trabajado en clase.

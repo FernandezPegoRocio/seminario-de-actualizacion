@@ -1,0 +1,55 @@
+--------------------------------------------------------PROCESO-----------------------------------------------------------
+
+---Para su solución se siguió el mismo lineamiento de la calculadora: un único archivo index.html con HTML, CSS y JS
+
+---Se construyó la clase TablaMeterologica extendiendo HTMLElement, invocando super() como primera instrucción
+
+---Se definió this.datos como objeto interno con la información completa de la tabla:
+
++ meses: array con los 13 encabezados (Ene. a Dic. + Anual)
+
++ filas: array de objetos, cada uno con:
+
++ label:   texto descriptivo de la fila
+
++ tipo:    categoría de la fila ('temperatura', 'precipitacion', 'diasPrecip', 'sol', 'humedad')
+
++ valores: array de 13 números (12 meses + valor anual)
+
+---Se declararon como miembros del componente:
+
++ this.contenedor  --> div principal que envuelve todo el componente
+
++ this.divTitulo   --> div con el título de la tabla
+
++ this.tabla       --> elemento table que contiene toda la grilla
+
++ this.divFuente   --> div con el texto de las fuentes
+
+---_construirTabla() --> construye dinámicamente el thead con los meses y el tbody con todas las filas:
+
++ para cada fila crea un td de etiqueta con clase 'fila-label' o 'fila-label azul' según el tipo
+
++ para cada valor crea un td y le asigna backgroundColor y color llamando a _colorCelda() y _colorTexto()
+
+---_colorCelda(tipo, valor, serie) --> devuelve el color de fondo según el tipo de fila y el valor:
+
++ temperaturas: escala de rojo intenso (≥35°C) a azul (negativo)
+
++ precipitación: escala de azul oscuro (≥100mm) a azul claro
+
++ diasPrecip, sol y humedad: colores fijos por tipo
+
+---_colorTexto(tipo, valor, serie) --> devuelve blanco para celdas oscuras, negro para el resto
+
+---getPromediosTemperaturas() --> recorre this.datos.filas filtrando solo tipo 'temperatura':
+
++ toma slice(0, 12) para excluir el valor anual
+
++ calcula la suma y divide por 12
+
++ devuelve un objeto con el label de cada fila como clave y el promedio como valor
+
+---En connectedCallback y disconnectedCallback se implementa la interfaz mínima de WebComponents
+
+---En main() se instancia el componente, se agrega al body y se llama a getPromediosTemperaturas() en consola

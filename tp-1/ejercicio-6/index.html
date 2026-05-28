@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+
+<html lang="es">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Clima Mar del Plata</title>
+
+</head>
+
+<body>
+
+</body>
+
+<style>
+
+body {
+
+display: flex;
+
+justify-content: center;
+
+align-items: flex-start;
+
+padding: 30px;
+
+background-color: #f0f0f0;
+
+font-family: Arial, sans-serif;
+
+}
+
+.clima-contenedor {
+
+background-color: #ffffff;
+
+border: 1px solid #aaaaaa;
+
+border-radius: 4px;
+
+overflow: hidden;
+
+max-width: 900px;
+
+width: 100%;
+
+box-shadow: 0px 4px 12px #cccccc;
+
+}
+
+.clima-titulo {
+
+background-color: #e8e8e8;
+
+border-bottom: 1px solid #aaaaaa;
+
+padding: 8px 12px;
+
+font-size: 0.95em;
+
+font-weight: bold;
+
+color: #1a1a1a;
+
+display: flex;
+
+align-items: center;
+
+gap: 8px;
+
+}
+
+.clima-tabla {
+
+width: 100%;
+
+border-collapse: collapse;
+
+font-size: 0.78em;
+
+}
+
+.clima-tabla th {
+
+background-color: #cccccc;
+
+color: #1a1a1a;
+
+padding: 5px 4px;
+
+text-align: center;
+
+border: 1px solid #aaaaaa;
+
+font-weight: bold;
+
+white-space: nowrap;
+
+}
+
+.clima-tabla td {
+
+padding: 4px 3px;
+
+text-align: center;
+
+border: 1px solid #aaaaaa;
+
+white-space: nowrap;
+
+}
+
+.clima-tabla td.fila-label {
+
+text-align: left;
+
+padding-left: 6px;
+
+font-weight: bold;
+
+color: #1a1a1a;
+
+background-color: #e0e0e0;
+
+min-width: 120px;
+
+}
+
+.clima-tabla td.fila-label.azul {
+
+color: #0055aa;
+
+background-color: #ddeeff;
+
+}
+
+.clima-fuente {
+
+font-size: 0.72em;
+
+color: #555555;
+
+padding: 6px 10px;
+
+border-top: 1px solid #cccccc;
+
+background-color: #f5f5f5;
+
+}
+
+</style>
+
+<script>
+
+class TablaMeterologica extends HTMLElement
+
+{
+
+constructor()
+
+{
+
+super();
+
+this.datos = {
+
+meses: ['Ene.', 'Feb.', 'Mar.', 'Abr.', 'May.', 'Jun.', 'Jul.', 'Ago.', 'Sep.', 'Oct.', 'Nov.', 'Dic.', 'Anual'],
+
+filas: [
+
+{
+label:    'Temp. máx. abs. (°C)',
+tipo:     'temperatura',
+valores:  [42.4, 38.1, 36.3, 32.5, 27.4, 22.2, 27.7, 24.7, 28.8, 34.4, 35.7, 39.4, 39.4]
+},
+
+{
+label:    'Temp. máx. media (°C)',
+tipo:     'temperatura',
+valores:  [25.3, 25.8, 23.7, 20.5, 16.8, 13.8, 13.1, 14.4, 16.0, 18.5, 21.7, 24.4, 19.5]
+},
+
+{
+label:    'Temp. media (°C)',
+tipo:     'temperatura',
+valores:  [20.3, 19.9, 18.0, 14.6, 11.3, 8.5, 8.1, 8.9, 10.5, 13.1, 15.9, 18.5, 14.0]
+},
+
+{
+label:    'Temp. mín. media (°C)',
+tipo:     'temperatura',
+valores:  [14.3, 14.1, 12.5, 9.1, 6.4, 4.1, 3.8, 4.0, 5.3, 7.6, 10.1, 12.7, 8.7]
+},
+
+{
+label:    'Temp. mín. abs. (°C)',
+tipo:     'temperatura',
+valores:  [4.7, 1.2, 1.9, -1.0, -3.0, -5.5, -9.3, -8.4, -5.5, -3.0, -2.0, -0.2, -9.3]
+},
+
+{
+label:    'Precipitación total (mm)',
+tipo:     'precipitacion',
+valores:  [100.1, 72.8, 107.0, 73.3, 73.5, 54.9, 58.9, 64.0, 58.4, 83.4, 75.3, 104.0, 923.6]
+},
+
+{
+label:    'Días de precipitaciones (≥ 0.1 mm)',
+tipo:     'diasPrecip',
+valores:  [9, 8, 9, 9, 9, 9, 8, 7, 10, 10, 10, 9, 107]
+},
+
+{
+label:    'Horas de sol',
+tipo:     'sol',
+valores:  [288.3, 234.5, 232.5, 195.0, 167.4, 120.0, 127.1, 164.3, 174.0, 210.8, 222.0, 269.7, 2405.6]
+},
+
+{
+label:    'Humedad relativa (%)',
+tipo:     'humedad',
+valores:  [76, 77, 79, 81, 83, 84, 81, 81, 80, 80, 77, 76, 80]
+}
+
+]
+
+};
+
+this.contenedor = document.createElement('div');
+
+this.contenedor.className = 'clima-contenedor';
+
+this.divTitulo = document.createElement('div');
+
+this.divTitulo.className = 'clima-titulo';
+
+this.divTitulo.innerText = 'Parámetros climáticos promedio de Mar del Plata, BA (1961–1990)';
+
+this.tabla = document.createElement('table');
+
+this.tabla.className = 'clima-tabla';
+
+this._construirTabla();
+
+this.divFuente = document.createElement('div');
+
+this.divFuente.className = 'clima-fuente';
+
+this.divFuente.innerText = 'Fuente n.º 1: NOAA, Servicio Meteorológico Nacional  |  Fuente n.º 2: UNLP (sun only)';
+
+this.contenedor.appendChild(this.divTitulo);
+
+this.contenedor.appendChild(this.tabla);
+
+this.contenedor.appendChild(this.divFuente);
+
+this.appendChild(this.contenedor);
+
+}
+
+_construirTabla()
+
+{
+
+this.tabla.innerHTML = '';
+
+// --- encabezado ---
+
+let thead = document.createElement('thead');
+
+let trHead = document.createElement('tr');
+
+let thMes = document.createElement('th');
+
+thMes.innerText = 'Mes';
+
+trHead.appendChild(thMes);
+
+for (let i = 0; i < this.datos.meses.length; i++)
+
+{
+
+let th       = document.createElement('th');
+
+th.innerText = this.datos.meses[i];
+
+trHead.appendChild(th);
+
+}
+
+thead.appendChild(trHead);
+
+this.tabla.appendChild(thead);
+
+// --- cuerpo ---
+
+let tbody = document.createElement('tbody');
+
+for (let f = 0; f < this.datos.filas.length; f++)
+
+{
+
+let fila = this.datos.filas[f];
+
+let tr   = document.createElement('tr');
+
+let tdLabel       = document.createElement('td');
+
+tdLabel.className = fila.tipo === 'precipitacion' || fila.tipo === 'diasPrecip' || fila.tipo === 'sol' || fila.tipo === 'humedad'
+
+? 'fila-label azul'
+
+: 'fila-label';
+
+tdLabel.innerText = fila.label;
+
+tr.appendChild(tdLabel);
+
+for (let v = 0; v < fila.valores.length; v++)
+
+{
+
+let td       = document.createElement('td');
+
+let valor    = fila.valores[v];
+
+td.innerText = valor;
+
+td.style.backgroundColor = this._colorCelda(fila.tipo, valor, fila.valores);
+
+td.style.color            = this._colorTexto(fila.tipo, valor, fila.valores);
+
+tr.appendChild(td);
+
+}
+
+tbody.appendChild(tr);
+
+}
+
+this.tabla.appendChild(tbody);
+
+}
+
+_colorCelda(tipo, valor, serie)
+
+{
+
+if (tipo === 'temperatura')
+
+{
+
+if (valor >= 35)  return '#c0392b';
+
+if (valor >= 28)  return '#e74c3c';
+
+if (valor >= 22)  return '#e67e22';
+
+if (valor >= 16)  return '#f39c12';
+
+if (valor >= 10)  return '#f1c40f';
+
+if (valor >= 4)   return '#a8d8a8';
+
+if (valor >= 0)   return '#7ec8e3';
+
+return '#4a90d9';
+
+}
+
+if (tipo === 'precipitacion')
+
+{
+
+if (valor >= 100) return '#2980b9';
+
+if (valor >= 75)  return '#5dade2';
+
+if (valor >= 55)  return '#85c1e9';
+
+return '#aed6f1';
+
+}
+
+if (tipo === 'diasPrecip')
+
+{
+
+return '#d6eaf8';
+
+}
+
+if (tipo === 'sol')
+
+{
+
+if (valor >= 250) return '#f39c12';
+
+if (valor >= 180) return '#f9e79f';
+
+return '#fdfefe';
+
+}
+
+if (tipo === 'humedad')
+
+{
+
+return '#d5f5e3';
+
+}
+
+return '#ffffff';
+
+}
+
+_colorTexto(tipo, valor, serie)
+
+{
+
+if (tipo === 'temperatura' && valor >= 28) return '#ffffff';
+
+if (tipo === 'precipitacion' && valor >= 75) return '#ffffff';
+
+return '#1a1a1a';
+
+}
+
+getPromediosTemperaturas()
+
+{
+
+let resultado = {};
+
+for (let f = 0; f < this.datos.filas.length; f++)
+
+{
+
+let fila = this.datos.filas[f];
+
+if (fila.tipo !== 'temperatura') continue;
+
+// el último valor es el anual, no lo incluimos en el promedio mensual
+
+let valoresMensuales = fila.valores.slice(0, 12);
+
+let suma = 0;
+
+for (let i = 0; i < valoresMensuales.length; i++)
+
+{
+
+suma += valoresMensuales[i];
+
+}
+
+let promedio = suma / valoresMensuales.length;
+
+resultado[fila.label] = parseFloat(promedio.toFixed(2));
+
+}
+
+return resultado;
+
+}
+
+connectedCallback()
+
+{
+
+console.log('TablaMeterologica agregada al DOM');
+
+}
+
+disconnectedCallback()
+
+{
+
+console.log('TablaMeterologica removida del DOM');
+
+}
+
+}
+
+customElements.define('x-tabla-meteorologica', TablaMeterologica);
+
+function main()
+
+{
+
+let miTabla = new TablaMeterologica();
+
+document.body.appendChild(miTabla);
+
+console.log('Promedios de temperaturas:', miTabla.getPromediosTemperaturas());
+
+}
+
+window.onload = main;
+
+</script>
+
+</html>
