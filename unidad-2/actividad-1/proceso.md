@@ -1,52 +1,51 @@
 ---------------------------------------------------------CONSIGNA---------------------------------------------------------
 
 A partir del código desarrollado en la actividad "WebComponents II" (Calculadora), desarrollar la migración del 
-WebComponent monolítico a su correspondiente diseño basado en MVC siguiendo los lineamientos planteados en el 
-apunte de cátedra.
+WebComponent a su correspondiente diseño basado en MVC 
 
 --------------------------------------------------------PROCESO-----------------------------------------------------------
 
----Para su solución se usó un único archivo index.html siguiendo el lineamiento trabajado en clase
----Se separó el WebComponent monolítico en tres clases con responsabilidades bien definidas:
+---Para su solución se usó un unico archivo index.html 
+---Se separo el WebComponent en tres clases con responsabilidades bien definidas:
 
----MODEL - CalculadoraModel extends EventTarget:
+---MODELO - CalculadoraModel extends EventTarget:
 
    + hereda de EventTarget para poder notificar cambios via dispatchEvent siguiendo el patrón Observer
 
    + this.operacion se inicializa como string vacío
 
-   + getOperacion() --> devuelve el string de la operación actual
+   + getOperacion() --> devuelve el string de la operacion actual
 
    + agregarValor(valor) --> concatena el valor recibido a this.operacion y despacha el evento 'changed'
 
-   + calcular() --> evalúa la operación con eval(), actualiza this.operacion y despacha el evento 'changed'
+   + calcular() --> evalua la operacion con eval(), actualiza this.operacion y despacha el evento 'changed'
 
    + borrar() --> resetea this.operacion a vacío y despacha el evento 'changed'
 
    + el Model es independiente de la Vista, no la conoce ni tiene ninguna conexión con ella
 
----VIEW - CalculadoraView extends HTMLElement:
+---VISTA - CalculadoraView extends HTMLElement:
 
    + hereda de HTMLElement para renderizarse en el DOM
 
    + el constructor define y construye todos los elementos visuales igual que en el WebComponent anterior:
      display, tabla, botones numéricos, operadores, igual y borrar
 
-   + update(valor) --> método pasivo que recibe un valor del controlador y lo muestra en el display
+   + update(valor) --> metodo pasivo que recibe un valor del controlador y lo muestra en el display
 
-   + la Vista no conoce al Modelo ni tiene ninguna conexión con él
+   + la Vista no conoce al Modelo ni tiene ninguna conexion con él
 
-   + connectedCallback y disconnectedCallback implementan la interfaz mínima de WebComponents
+   + connectedCallback y disconnectedCallback implementan la interfaz de WebComponents
 
    + los eventos NO se vinculan en connectedCallback sino en el Controller a través de init()
 
----CONTROLLER - CalculadoraController:
+---CONTROLADOR - CalculadoraController:
 
    + no hereda de ninguna clase
 
    + recibe modelObject y viewObject por constructor y los almacena en this.model y this.view
 
-   + es el único que conoce y asocia tanto al Model como a la View
+   + es el unico que conoce y asocia tanto al modelo como a la vista
 
    + init() --> suscribe todos los eventos de la vista con addEventListener y .bind(this, valor)
      y suscribe el evento 'changed' del modelo con addEventListener
@@ -81,9 +80,9 @@ apunte de cátedra.
 ---Se visualiza la calculadora con el mismo aspecto que en la actividad anterior
 
 ---Al presionar cualquier botón numérico u operador el Controller recibe el evento,
-   actualiza el Model y el Model notifica el cambio via dispatchEvent
+   actualiza el Modelo y el Modelo notifica el cambio via dispatchEvent
 
----El Controller recibe la notificación y llama a view.update() para mostrar el resultado en el display
+---El Controlador recibe la notificacion y llama a view.update() para mostrar el resultado en el display
 
 ---Al presionar "=" el Controller llama a model.calcular() y el resultado se muestra en el display
 
