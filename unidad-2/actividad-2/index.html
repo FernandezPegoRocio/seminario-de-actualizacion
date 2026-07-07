@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>WCApplicationView</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/5/w3.css">
+    <link rel="stylesheet" href="https://www.w3schools.com/lib/w3-theme-teal.css">
+</head>
+<body>
+</body>
+<style>
+    body { font-family: "Roboto", sans-serif; }
+    .w3-bar-block .w3-bar-item { padding: 16px; font-weight: bold; }
+</style>
+<script>
+
+    // ── FUNCIONES DE CREACIÓN ────────────────────────────────────────────────
+    // Son funciones por fuera de la clase porque solo se ejecutan una vez
+    // en el constructor y no deben ser accesibles como métodos públicos
+
+    function createNavbar()
+    {
+        // Construir elementos
+        let divTop    = document.createElement('div');
+        let divInner  = document.createElement('div');
+        let label     = document.createElement('label');
+        let iconBars  = document.createElement('i');
+        let divRight  = document.createElement('div');
+        let btnMail   = document.createElement('button');
+        let iconMail  = document.createElement('i');
+        let btnBell   = document.createElement('button');
+        let iconBell  = document.createElement('i');
+        let divUser   = document.createElement('div');
+        let divBtn    = document.createElement('div');
+        let divCircle = document.createElement('div');
+        let iconUser  = document.createElement('i');
+
+        // Asignar clases y estilos
+        divTop.style.height = '54px';
+        divTop.classList.add('w3-top', 'w3-card');
+
+        divInner.classList.add('w3-flex-bar', 'w3-theme', 'w3-left-align');
+
+        label.classList.add('w3-button', 'w3-large', 'w3-opacity-min');
+        iconBars.classList.add('fa', 'fa-bars');
+
+        divRight.classList.add('w3-right');
+
+        btnMail.type = 'button';
+        btnMail.classList.add('w3-button', 'w3-large', 'w3-opacity-min');
+        iconMail.classList.add('fa', 'fa-envelope-open');
+
+        btnBell.type = 'button';
+        btnBell.classList.add('w3-button', 'w3-large', 'w3-opacity-min');
+        iconBell.classList.add('fa', 'fa-bell');
+
+        divUser.classList.add('text-right');
+        divBtn.classList.add('w3-button');
+
+        divCircle.classList.add('w3-circle', 'w3-center', 'w3-text-white', 'w3-primary');
+        divCircle.style.width  = '38px';
+        divCircle.style.height = '38px';
+
+        iconUser.classList.add('fa', 'fa-fw', 'fa-user', 'fa');
+        iconUser.style.marginTop = '11px';
+
+        // Ensamblar
+        label.appendChild(iconBars);
+        btnMail.appendChild(iconMail);
+        btnBell.appendChild(iconBell);
+        divRight.appendChild(btnMail);
+        divRight.appendChild(btnBell);
+        divCircle.appendChild(iconUser);
+        divBtn.appendChild(divCircle);
+        divUser.appendChild(divBtn);
+
+        divInner.appendChild(label);
+        divInner.appendChild(divRight);
+        divInner.appendChild(divUser);
+        divTop.appendChild(divInner);
+
+        return divTop;
+    }
+
+    function createButtonMenu(texto, href, icono)
+    {
+        // Construir elementos
+        let a    = document.createElement('a');
+        let icon = document.createElement('i');
+        let nbsp = document.createTextNode('\u00A0');
+
+        // Asignar clases y estilos
+        a.href = href;
+        a.classList.add('w3-bar-item', 'w3-button', 'w3-padding-large', 'w3-hover-text-primary');
+        icon.classList.add('fa', 'fa-fw', icono);
+
+        // Ensamblar
+        a.appendChild(icon);
+        a.appendChild(nbsp);
+        a.appendChild(document.createTextNode(texto));
+
+        return a;
+    }
+
+    function createSidebar()
+    {
+        // Construir elementos
+        let nav          = document.createElement('nav');
+        let divBarBlock  = document.createElement('div');
+        let spanMainNav  = document.createElement('span');
+        let spanLabels   = document.createElement('span');
+
+        let linkDashboard   = createButtonMenu('Dashboard',   './index.html',    'fa-bar-chart');
+        let linkIcons       = createButtonMenu('UI Icons',    './icons.html',    'fa-fire');
+        let linkForms       = createButtonMenu('Forms',       './forms.html',    'fa-edit');
+        let linkTables      = createButtonMenu('Tables',      './tables.html',   'fa-table');
+        let linkProfile     = createButtonMenu('Profile',     './profile.html',  'fa-user-circle');
+        let linkLogin       = createButtonMenu('Login',       './login.html',    'fa-lock');
+        let linkRegister    = createButtonMenu('Registration','./register.html', 'fa-sign-in');
+
+        let linkImportant   = createButtonMenu('Important',   '#', 'fa-coffee');
+        let linkWarning     = createButtonMenu('Warning',     '#', 'fa-circle-o-notch');
+        let linkInformation = createButtonMenu('Information', '#', 'fa-share-alt');
+
+        // Asignar clases y estilos
+        nav.id = 'sidebar';
+        nav.classList.add('w3-sidebar', 'w3-top', 'w3-bottom', 'w3-collapse', 'w3-white', 'w3-border-right', 'w3-border-top');
+        nav.style.zIndex      = '3';
+        nav.style.width       = '230px';
+        nav.style.height      = 'auto';
+        nav.style.marginTop   = '54px';
+
+        divBarBlock.classList.add('w3-bar-block');
+
+        spanMainNav.classList.add('w3-bar-item', 'w3-padding', 'w3-small', 'w3-opacity');
+        spanMainNav.style.marginTop = '8px';
+        spanMainNav.innerText       = 'MAIN NAVIGATION';
+
+        spanLabels.classList.add('w3-bar-item', 'w3-padding', 'w3-small', 'w3-opacity');
+        spanLabels.innerText = 'LABELS';
+
+        // Colores de íconos labels
+        linkImportant.querySelector('i').classList.add('w3-text-danger');
+        linkWarning.querySelector('i').classList.add('w3-text-success');
+        linkInformation.querySelector('i').classList.add('w3-text-info');
+
+        // Ensamblar
+        divBarBlock.appendChild(spanMainNav);
+        divBarBlock.appendChild(linkDashboard);
+        divBarBlock.appendChild(linkIcons);
+        divBarBlock.appendChild(linkForms);
+        divBarBlock.appendChild(linkTables);
+        divBarBlock.appendChild(linkProfile);
+        divBarBlock.appendChild(linkLogin);
+        divBarBlock.appendChild(linkRegister);
+        divBarBlock.appendChild(spanLabels);
+        divBarBlock.appendChild(linkImportant);
+        divBarBlock.appendChild(linkWarning);
+        divBarBlock.appendChild(linkInformation);
+
+        nav.appendChild(divBarBlock);
+
+        return nav;
+    }
+
+    function createContent()
+    {
+        // Construir elementos
+        let divMain = document.createElement('div');
+
+        // Asignar clases y estilos
+        divMain.classList.add('w3-main');
+        divMain.style.marginTop  = '54px';
+        divMain.style.marginLeft = '230px';
+
+        return divMain;
+    }
+
+    function createFooter()
+    {
+        // Construir elementos
+        let footer = document.createElement('footer');
+        let span   = document.createElement('span');
+
+        // Asignar clases y estilos
+        footer.classList.add('w3-padding', 'w3-border-top', 'w3-center', 'w3-white', 'w3-margin-top');
+        span.classList.add('w3-opacity');
+        span.innerText = 'Powered by W3Mix.com';
+
+        // Ensamblar
+        footer.appendChild(span);
+
+        return footer;
+    }
+
+    // ── WEBCOMPONENT ────────────────────────────────────────────────────────
+
+    class WCApplicationView extends HTMLElement
+    {
+        constructor()
+        {
+            super();
+
+            this.navbar   = createNavbar();
+            this.sidebar  = createSidebar();
+            this.content  = createContent();
+            this.footer   = createFooter();
+
+            // Referencias a elementos con eventos
+            this.btnBars  = this.navbar.querySelector('.fa-bars').parentElement;
+
+            this.content.appendChild(this.footer);
+
+            this.appendChild(this.navbar);
+            this.appendChild(this.sidebar);
+            this.appendChild(this.content);
+        }
+
+        onToggleSidebar()
+        {
+            if (this.sidebar.style.display === 'none')
+            {
+                this.sidebar.style.display = 'block';
+            }
+            else
+            {
+                this.sidebar.style.display = 'none';
+            }
+        }
+
+        connectedCallback()
+        {
+            console.log('WCApplicationView agregada al DOM');
+            this.btnBars.addEventListener('click', this.onToggleSidebar.bind(this));
+        }
+
+        disconnectedCallback()
+        {
+            console.log('WCApplicationView removida del DOM');
+            this.btnBars.removeEventListener('click', this.onToggleSidebar.bind(this));
+        }
+    }
+
+    customElements.define('x-application-view', WCApplicationView);
+
+    function main()
+    {
+        let miApp = new WCApplicationView();
+        document.body.appendChild(miApp);
+    }
+
+    window.onload = main;
+
+</script>
+</html>
+
+
