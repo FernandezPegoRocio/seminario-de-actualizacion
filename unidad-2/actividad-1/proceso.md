@@ -1,11 +1,10 @@
 ---------------------------------------------------------CONSIGNA---------------------------------------------------------
-
-A partir del código desarrollado en la actividad "WebComponents II" (Calculadora), desarrollar la migración del 
-WebComponent a su correspondiente diseño basado en MVC 
+A partir del código desarrollado en la actividad "WebComponents II" (Calculadora), desarrollar la migración del
+WebComponent a su correspondiente diseño basado en MVC
 
 --------------------------------------------------------PROCESO-----------------------------------------------------------
 
----Para su solución se usó un unico archivo index.html 
+---Para su solución se usó un unico archivo index.html
 ---Se separo el WebComponent en tres clases con responsabilidades bien definidas:
 
 ---MODELO - CalculadoraModel extends EventTarget:
@@ -22,7 +21,7 @@ WebComponent a su correspondiente diseño basado en MVC
 
    + borrar() --> resetea this.operacion a vacío y despacha el evento 'changed'
 
-   + el Model es independiente de la Vista, no la conoce ni tiene ninguna conexión con ella
+   + el Modelo es independiente de la Vista, no la conoce ni tiene ninguna conexión con ella
 
 ---VISTA - CalculadoraView extends HTMLElement:
 
@@ -33,11 +32,15 @@ WebComponent a su correspondiente diseño basado en MVC
 
    + update(valor) --> metodo pasivo que recibe un valor del controlador y lo muestra en el display
 
+   + _despacharRequest(detail) --> metodo interno que dispara un CustomEvent llamado 'request'
+     con el detail correspondiente a cada boton presionado
+
    + la Vista no conoce al Modelo ni tiene ninguna conexion con él
 
-   + connectedCallback y disconnectedCallback implementan la interfaz de WebComponents
+   + en connectedCallback la vista vincula sus propios botones internamente con addEventListener
+     y cada uno llama a _despacharRequest() con su valor como detail
 
-   + los eventos NO se vinculan en connectedCallback sino en el Controller a través de init()
+   + en disconnectedCallback se desvinculan todos los eventos con removeEventListener
 
 ---CONTROLADOR - CalculadoraController:
 
@@ -47,19 +50,20 @@ WebComponent a su correspondiente diseño basado en MVC
 
    + es el unico que conoce y asocia tanto al modelo como a la vista
 
-   + init() --> suscribe todos los eventos de la vista con addEventListener y .bind(this, valor)
-     y suscribe el evento 'changed' del modelo con addEventListener
+   + init() --> suscribe el evento 'changed' del modelo con addEventListener
+     y suscribe el único evento personalizado 'request' de la vista con addEventListener
      y establece el estado inicial de la vista llamando a this.view.update()
 
-   + release() --> desuscribe todos los eventos con removeEventListener para evitar memory leaks
+   + release() --> desuscribe ambos eventos con removeEventListener para evitar memory leaks
 
-   + onNumeroClick(valor) --> recibe el valor del botón presionado y llama a this.model.agregarValor()
+   + onViewRequest(event) --> único manejador de eventos de la vista, discrimina la acción
+     con event.detail:
 
-   + onIgualClick() --> llama a this.model.calcular()
+     + si detail es '=' llama a this.model.calcular()
+     + si detail es 'borrar' llama a this.model.borrar()
+     + en cualquier otro caso llama a this.model.agregarValor(event.detail)
 
-   + onBorrarClick() --> llama a this.model.borrar()
-
-   + onModelChanged() --> recibe la notificación del modelo y llama a this.view.update()
+   + onModelChanged() --> recibe la notificacion del modelo y llama a this.view.update()
 
 ---En main() se instancian las tres clases por separado y se inyectan en el Controller:
 
@@ -79,11 +83,16 @@ WebComponent a su correspondiente diseño basado en MVC
 
 ---Se visualiza la calculadora con el mismo aspecto que en la actividad anterior
 
----Al presionar cualquier botón numérico u operador el Controller recibe el evento,
-   actualiza el Modelo y el Modelo notifica el cambio via dispatchEvent
+---Al presionar cualquier botón la vista despacha un CustomEvent 'request' con el valor como detail
+
+---El Controlador recibe el evento y determina qué acción ejecutar según event.detail
+
+---El Modelo procesa la acción y notifica el cambio via dispatchEvent('changed')
 
 ---El Controlador recibe la notificacion y llama a view.update() para mostrar el resultado en el display
 
----Al presionar "=" el Controller llama a model.calcular() y el resultado se muestra en el display
+---Al presionar "=" el modelo evalúa la operación y el resultado se muestra en el display
 
----Al presionar "Borrar" el Controller llama a model.borrar() y el display se limpia
+---Al presionar "Borrar" el modelo resetea la operación y el display se limpia
+
+

@@ -55,8 +55,8 @@
     }
 </style>
 <script>
-    //modelo
-    // Hereda de EventTarget para poder notificar cambios via dispatchEvent
+
+    // modelo
     class CalculadoraModel extends EventTarget
     {
         constructor()
@@ -89,8 +89,7 @@
         }
     }
 
-    // vista
-    // Hereda de HTMLElement para renderizarse en el DOM
+    //vista
     class CalculadoraView extends HTMLElement
     {
         constructor()
@@ -214,7 +213,12 @@
             return td;
         }
 
-        //muestra el valor que le pasa el controlador
+        // La vista despacha un único evento personalizado 
+        _despacharRequest(detail)
+        {
+            this.dispatchEvent(new CustomEvent('request', { detail: detail }));
+        }
+
         update(valor)
         {
             this.display.value = valor;
@@ -223,16 +227,52 @@
         connectedCallback()
         {
             console.log('CalculadoraView agregada al DOM');
+
+            // La vista vincula sus propios botones internamente y despacha afuera
+            this.btn7.addEventListener('click',     this._despacharRequest.bind(this, '7'));
+            this.btn8.addEventListener('click',     this._despacharRequest.bind(this, '8'));
+            this.btn9.addEventListener('click',     this._despacharRequest.bind(this, '9'));
+            this.btn4.addEventListener('click',     this._despacharRequest.bind(this, '4'));
+            this.btn5.addEventListener('click',     this._despacharRequest.bind(this, '5'));
+            this.btn6.addEventListener('click',     this._despacharRequest.bind(this, '6'));
+            this.btn3.addEventListener('click',     this._despacharRequest.bind(this, '3'));
+            this.btn2.addEventListener('click',     this._despacharRequest.bind(this, '2'));
+            this.btn1.addEventListener('click',     this._despacharRequest.bind(this, '1'));
+            this.btn0.addEventListener('click',     this._despacharRequest.bind(this, '0'));
+            this.btnPunto.addEventListener('click', this._despacharRequest.bind(this, '.'));
+            this.btnSuma.addEventListener('click',  this._despacharRequest.bind(this, '+'));
+            this.btnResta.addEventListener('click', this._despacharRequest.bind(this, '-'));
+            this.btnMult.addEventListener('click',  this._despacharRequest.bind(this, '*'));
+            this.btnDiv.addEventListener('click',   this._despacharRequest.bind(this, '/'));
+            this.btnIgual.addEventListener('click', this._despacharRequest.bind(this, '='));
+            this.btnBorrar.addEventListener('click',this._despacharRequest.bind(this, 'borrar'));
         }
 
         disconnectedCallback()
         {
             console.log('CalculadoraView removida del DOM');
+
+            this.btn7.removeEventListener('click',     this._despacharRequest.bind(this, '7'));
+            this.btn8.removeEventListener('click',     this._despacharRequest.bind(this, '8'));
+            this.btn9.removeEventListener('click',     this._despacharRequest.bind(this, '9'));
+            this.btn4.removeEventListener('click',     this._despacharRequest.bind(this, '4'));
+            this.btn5.removeEventListener('click',     this._despacharRequest.bind(this, '5'));
+            this.btn6.removeEventListener('click',     this._despacharRequest.bind(this, '6'));
+            this.btn3.removeEventListener('click',     this._despacharRequest.bind(this, '3'));
+            this.btn2.removeEventListener('click',     this._despacharRequest.bind(this, '2'));
+            this.btn1.removeEventListener('click',     this._despacharRequest.bind(this, '1'));
+            this.btn0.removeEventListener('click',     this._despacharRequest.bind(this, '0'));
+            this.btnPunto.removeEventListener('click', this._despacharRequest.bind(this, '.'));
+            this.btnSuma.removeEventListener('click',  this._despacharRequest.bind(this, '+'));
+            this.btnResta.removeEventListener('click', this._despacharRequest.bind(this, '-'));
+            this.btnMult.removeEventListener('click',  this._despacharRequest.bind(this, '*'));
+            this.btnDiv.removeEventListener('click',   this._despacharRequest.bind(this, '/'));
+            this.btnIgual.removeEventListener('click', this._despacharRequest.bind(this, '='));
+            this.btnBorrar.removeEventListener('click',this._despacharRequest.bind(this, 'borrar'));
         }
     }
 
     // controlador
-    // Nexo entre Mmodelo y vista, ninguno se conoce entre si
     class CalculadoraController
     {
         constructor(modelObject, viewObject)
@@ -243,68 +283,37 @@
 
         init()
         {
-            // eventos del modelo
+            // Suscripción al evento del modelo
             this.model.addEventListener('changed', this.onModelChanged.bind(this));
 
-            // Suscripción a eventos de la vista
-            this.view.btn7.addEventListener('click',     this.onNumeroClick.bind(this, '7'));
-            this.view.btn8.addEventListener('click',     this.onNumeroClick.bind(this, '8'));
-            this.view.btn9.addEventListener('click',     this.onNumeroClick.bind(this, '9'));
-            this.view.btn4.addEventListener('click',     this.onNumeroClick.bind(this, '4'));
-            this.view.btn5.addEventListener('click',     this.onNumeroClick.bind(this, '5'));
-            this.view.btn6.addEventListener('click',     this.onNumeroClick.bind(this, '6'));
-            this.view.btn3.addEventListener('click',     this.onNumeroClick.bind(this, '3'));
-            this.view.btn2.addEventListener('click',     this.onNumeroClick.bind(this, '2'));
-            this.view.btn1.addEventListener('click',     this.onNumeroClick.bind(this, '1'));
-            this.view.btn0.addEventListener('click',     this.onNumeroClick.bind(this, '0'));
-            this.view.btnPunto.addEventListener('click', this.onNumeroClick.bind(this, '.'));
-            this.view.btnSuma.addEventListener('click',  this.onNumeroClick.bind(this, '+'));
-            this.view.btnResta.addEventListener('click', this.onNumeroClick.bind(this, '-'));
-            this.view.btnMult.addEventListener('click',  this.onNumeroClick.bind(this, '*'));
-            this.view.btnDiv.addEventListener('click',   this.onNumeroClick.bind(this, '/'));
-            this.view.btnIgual.addEventListener('click', this.onIgualClick.bind(this));
-            this.view.btnBorrar.addEventListener('click', this.onBorrarClick.bind(this));
+            // El controlador solo escucha el unico evento de la vista
+            this.view.addEventListener('request', this.onViewRequest.bind(this));
 
-            // stado inicial de la vista
+            // Estado inicial de la vista
             this.view.update(this.model.getOperacion());
         }
 
         release()
         {
             this.model.removeEventListener('changed', this.onModelChanged.bind(this));
-
-            this.view.btn7.removeEventListener('click',     this.onNumeroClick.bind(this, '7'));
-            this.view.btn8.removeEventListener('click',     this.onNumeroClick.bind(this, '8'));
-            this.view.btn9.removeEventListener('click',     this.onNumeroClick.bind(this, '9'));
-            this.view.btn4.removeEventListener('click',     this.onNumeroClick.bind(this, '4'));
-            this.view.btn5.removeEventListener('click',     this.onNumeroClick.bind(this, '5'));
-            this.view.btn6.removeEventListener('click',     this.onNumeroClick.bind(this, '6'));
-            this.view.btn3.removeEventListener('click',     this.onNumeroClick.bind(this, '3'));
-            this.view.btn2.removeEventListener('click',     this.onNumeroClick.bind(this, '2'));
-            this.view.btn1.removeEventListener('click',     this.onNumeroClick.bind(this, '1'));
-            this.view.btn0.removeEventListener('click',     this.onNumeroClick.bind(this, '0'));
-            this.view.btnPunto.removeEventListener('click', this.onNumeroClick.bind(this, '.'));
-            this.view.btnSuma.removeEventListener('click',  this.onNumeroClick.bind(this, '+'));
-            this.view.btnResta.removeEventListener('click', this.onNumeroClick.bind(this, '-'));
-            this.view.btnMult.removeEventListener('click',  this.onNumeroClick.bind(this, '*'));
-            this.view.btnDiv.removeEventListener('click',   this.onNumeroClick.bind(this, '/'));
-            this.view.btnIgual.removeEventListener('click', this.onIgualClick.bind(this));
-            this.view.btnBorrar.removeEventListener('click', this.onBorrarClick.bind(this));
+            this.view.removeEventListener('request',  this.onViewRequest.bind(this));
         }
 
-        onNumeroClick(valor)
+        // El controlador discrimina la acción con event.detail
+        onViewRequest(event)
         {
-            this.model.agregarValor(valor);
-        }
-
-        onIgualClick()
-        {
-            this.model.calcular();
-        }
-
-        onBorrarClick()
-        {
-            this.model.borrar();
+            if (event.detail === '=')
+            {
+                this.model.calcular();
+            }
+            else if (event.detail === 'borrar')
+            {
+                this.model.borrar();
+            }
+            else
+            {
+                this.model.agregarValor(event.detail);
+            }
         }
 
         onModelChanged()
@@ -330,3 +339,4 @@
 
 </script>
 </html>
+
