@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>Ejercicios Unidad 3</title>
+    <script src="MVCCanvas.js"></script>
+    <script src="ejercicio-1.js"></script>
+    <script src="ejercicio-2.js"></script>
+    <script src="ejercicio-3.js"></script>
+    <script src="ejercicio-4.js"></script>
+    <script src="ejercicio-5.js"></script>
+    <script src="ejercicio-6.js"></script>
+    <script src="ejercicio-7.js"></script>
+    <script src="ejercicio-8.js"></script>
+    <script src="ejercicio-9.js"></script>
+    <script src="ejercicio-10.js"></script>
+    <script src="ejercicio-11.js"></script>
+    <script src="ejercicio-12.js"></script>
+</head>
+<body>
+</body>
+<script>
+
+function main()
+{
+    let btnEj1  = document.createElement('button');
+    let btnEj2  = document.createElement('button');
+    let btnEj3  = document.createElement('button');
+    let btnEj4  = document.createElement('button');
+    let btnEj5  = document.createElement('button');
+    let btnEj7  = document.createElement('button');
+    let btnEj8  = document.createElement('button');
+    let btnEj9  = document.createElement('button');
+    let btnEj10 = document.createElement('button');
+    let btnEj11 = document.createElement('button');
+
+    let wc = new View();
+
+    btnEj1.innerText  = 'Ejercicio 1';
+    btnEj2.innerText  = 'Ejercicio 2';
+    btnEj3.innerText  = 'Ejercicio 3';
+    btnEj4.innerText  = 'Ejercicio 4';
+    btnEj5.innerText  = 'Ejercicio 5';
+    btnEj7.innerText  = 'Ejercicio 7';
+    btnEj8.innerText  = 'Ejercicio 8';
+    btnEj9.innerText  = 'Ejercicio 9';
+    btnEj10.innerText = 'Ejercicio 10';
+    btnEj11.innerText = 'Ejercicio 11';
+
+    btnEj1.onclick  = () => { wc.render(ejercicio1);  }
+    btnEj2.onclick  = () => { wc.render(ejercicio2);  }
+    btnEj3.onclick  = () => { wc.render(ejercicio3);  }
+    btnEj4.onclick  = () => { wc.render(ejercicio4);  }
+    btnEj5.onclick  = () => { wc.render(ejercicio5);  }
+    btnEj7.onclick  = () => { wc.render(ejercicio7);  }
+    btnEj8.onclick  = () => { wc.render(ejercicio8);  }
+    btnEj9.onclick  = () => { wc.render(ejercicio9);  }
+    btnEj10.onclick = () => { wc.render(ejercicio10); }
+    btnEj11.onclick = () => { wc.render(ejercicio11); }
+
+    document.body.appendChild(btnEj1);
+    document.body.appendChild(btnEj2);
+    document.body.appendChild(btnEj3);
+    document.body.appendChild(btnEj4);
+    document.body.appendChild(btnEj5);
+    document.body.appendChild(btnEj7);
+    document.body.appendChild(btnEj8);
+    document.body.appendChild(btnEj9);
+    document.body.appendChild(btnEj10);
+    document.body.appendChild(btnEj11);
+
+    document.body.appendChild(wc);
+
+    mainEj6();
+    mainEj12();
+}
+
+window.onload = main;
+
+</script>
+</html>
