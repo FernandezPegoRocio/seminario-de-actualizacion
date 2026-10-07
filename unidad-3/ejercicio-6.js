@@ -134,11 +134,10 @@ class ControllerEj6
     }
 }
 
-function mainEj6()
-{
+function mainEj6() {
     let model = new ModelEj6();
     let view  = new ViewEj6();
     let ctrl  = new ControllerEj6(view, model);
     ctrl.enable();
-    document.body.appendChild(view);
+    document.getElementById('app').appendChild(view);
 }

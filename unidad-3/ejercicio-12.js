@@ -166,11 +166,10 @@ class ControllerEj12
     }
 }
 
-function mainEj12()
-{
+function mainEj12() {
     let model = new ModelEj12();
     let view  = new ViewEj12();
     let ctrl  = new ControllerEj12(view, model);
     ctrl.enable();
-    document.body.appendChild(view);
+    document.getElementById('app').appendChild(view);
 }

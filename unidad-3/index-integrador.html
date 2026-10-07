@@ -14,16 +14,8 @@
         <label for="selector">Seleccionar Ejercicio: </label>
         <select id="selector">
             <option value="">-- Elija una opción --</option>
-            <option value="ejercicio-1.js"  data-fn="ejercicio1">Ejercicio 1</option>
-            <option value="ejercicio-2.js"  data-fn="ejercicio2">Ejercicio 2</option>
-            <option value="ejercicio-3.js"  data-fn="ejercicio3">Ejercicio 3</option>
-            <option value="ejercicio-4.js"  data-fn="ejercicio4">Ejercicio 4</option>
-            <option value="ejercicio-5.js"  data-fn="ejercicio5">Ejercicio 5</option>
-            <option value="ejercicio-7.js"  data-fn="ejercicio7">Ejercicio 7</option>
-            <option value="ejercicio-8.js"  data-fn="ejercicio8">Ejercicio 8</option>
-            <option value="ejercicio-9.js"  data-fn="ejercicio9">Ejercicio 9</option>
-            <option value="ejercicio-10.js" data-fn="ejercicio10">Ejercicio 10</option>
-            <option value="ejercicio-11.js" data-fn="ejercicio11">Ejercicio 11</option>
+            <option value="ejercicio-6.js">Ejercicio 6</option>
+            <option value="ejercicio-12.js">Ejercicio 12</option>
         </select>
     </div>
 
@@ -33,28 +25,23 @@
 
     <script>
         document.getElementById('selector').addEventListener('change', function() {
-            let archivo   = this.value;
-            let nombreFn  = this.options[this.selectedIndex].dataset.fn;
+            let archivo = this.value;
             let contenedor = document.getElementById('app');
             contenedor.innerHTML = '';
-
             if (archivo) {
                 let scriptAnterior = document.getElementById('script-ejercicio');
                 if (scriptAnterior) scriptAnterior.remove();
-
                 let script = document.createElement('script');
                 script.id  = 'script-ejercicio';
                 script.src = archivo;
-
                 script.onload = function() {
-                    let wc = new View();
-                    contenedor.appendChild(wc);
-                    wc.render(window[nombreFn]);
+                    if (archivo === 'ejercicio-6.js')  mainEj6();
+                    if (archivo === 'ejercicio-12.js') mainEj12();
                 };
-
                 document.body.appendChild(script);
             }
         });
     </script>
+
 </body>
 </html>
