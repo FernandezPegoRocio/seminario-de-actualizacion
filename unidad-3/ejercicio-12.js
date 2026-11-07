@@ -1,3 +1,139 @@
+const EJEMPLOS_EJ12 = 'Cargue una sola figura por vez. Ejemplos:\n' +
+    '{ "tipo": "circulo", "x": 100, "y": 150, "radio": 40 }\n' +
+    '{ "tipo": "poligono", "puntos": [[50,50],[150,50],[100,150]] }';
+
+function normalizarFiguraEj12(figura)
+{
+    if (figura.tipo === undefined)
+    {
+        figura.tipo = figura.type;
+    }
+
+    if (figura.tipo === 'circle')
+    {
+        figura.tipo = 'circulo';
+    }
+
+    if (figura.tipo === 'polygon')
+    {
+        figura.tipo = 'poligono';
+    }
+
+    if (figura.radio === undefined)
+    {
+        figura.radio = figura.r;
+    }
+
+    if (figura.radio === undefined)
+    {
+        figura.radio = figura.radius;
+    }
+
+    if (figura.puntos === undefined)
+    {
+        figura.puntos = figura.points;
+    }
+
+    if (Array.isArray(figura.puntos))
+    {
+        for (let i = 0; i < figura.puntos.length; i++)
+        {
+            let punto = figura.puntos[i];
+
+            if (Array.isArray(punto))
+            {
+                figura.puntos[i] = { x: punto[0], y: punto[1] };
+            }
+        }
+    }
+}
+
+function figuraValidaEj12(figura)
+{
+    if (figura.tipo === 'circulo')
+    {
+        return Number.isFinite(figura.x) && Number.isFinite(figura.y) && Number.isFinite(figura.radio);
+    }
+
+    if (figura.tipo === 'poligono')
+    {
+        if (!Array.isArray(figura.puntos) || figura.puntos.length < 3)
+        {
+            return false;
+        }
+
+        for (let i = 0; i < figura.puntos.length; i++)
+        {
+            let punto = figura.puntos[i];
+
+            if (punto === null || !Number.isFinite(punto.x) || !Number.isFinite(punto.y))
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    return false;
+}
+
+function interpretarFiguraEj12(json)
+{
+    let figura;
+
+    try
+    {
+        figura = JSON.parse(json);
+    }
+    catch (error)
+    {
+        alert('El texto no es un JSON válido.\n' + EJEMPLOS_EJ12);
+        return null;
+    }
+
+    if (figura === null || typeof figura !== 'object')
+    {
+        alert('El JSON no describe una figura.\n' + EJEMPLOS_EJ12);
+        return null;
+    }
+
+    normalizarFiguraEj12(figura);
+
+    if (!figuraValidaEj12(figura))
+    {
+        alert('A la figura le faltan datos o tienen un formato incorrecto.\n' + EJEMPLOS_EJ12);
+        return null;
+    }
+
+    return figura;
+}
+
+function crearEtiquetaEj12(texto, control)
+{
+    let etiqueta = document.createElement('label');
+    etiqueta.innerText = texto + ': ';
+    etiqueta.style.marginLeft = '10px';
+    etiqueta.appendChild(control);
+
+    return etiqueta;
+}
+
+function patronLineaEj12(tipoLinea)
+{
+    if (tipoLinea === 'punteada')
+    {
+        return [2, 6];
+    }
+
+    if (tipoLinea === 'rayada')
+    {
+        return [14, 8];
+    }
+
+    return [];
+}
+
 class ModelEj12 extends EventTarget
 {
     constructor()
@@ -5,13 +141,13 @@ class ModelEj12 extends EventTarget
         super();
         this._figuras  = [];
         this._lineWidth = 1;
-        this._lineCap   = 'butt';
+        this._tipoLinea = 'solida';
     }
 
     agregarFigura(figura)
     {
         figura.lineWidth = this._lineWidth;
-        figura.lineCap   = this._lineCap;
+        figura.tipoLinea = this._tipoLinea;
         this._figuras.push(figura);
         this.changed();
     }
@@ -23,7 +159,7 @@ class ModelEj12 extends EventTarget
     }
 
     setLineWidth(v) { this._lineWidth = v; }
-    setLineCap(v)   { this._lineCap   = v; }
+    setTipoLinea(v) { this._tipoLinea = v; }
     getFiguras()    { return this._figuras; }
 
     changed()
@@ -49,24 +185,27 @@ class ViewEj12 extends View
         this._inputGrosor.min   = '1';
         this._inputGrosor.max   = '20';
 
-        this._selectCap = document.createElement('select');
-        let opciones = ['butt', 'round', 'square'];
+        this._selectTipoLinea = document.createElement('select');
+        let opciones = ['solida', 'punteada', 'rayada'];
         for (let i = 0; i < opciones.length; i++)
         {
             let opt = document.createElement('option');
             opt.value     = opciones[i];
             opt.innerText = opciones[i];
-            this._selectCap.appendChild(opt);
+            this._selectTipoLinea.appendChild(opt);
         }
 
-        this.appendChild(this._btnCargar);
-        this.appendChild(this._btnLimpiar);
-        this.appendChild(this._inputGrosor);
-        this.appendChild(this._selectCap);
+        let controles = document.createElement('div');
+        controles.style.marginBottom = '10px';
+        controles.appendChild(this._btnCargar);
+        controles.appendChild(this._btnLimpiar);
+        controles.appendChild(crearEtiquetaEj12('Grosor', this._inputGrosor));
+        controles.appendChild(crearEtiquetaEj12('Tipo de línea', this._selectTipoLinea));
+        this.insertBefore(controles, this._canvas);
     }
 
     getGrosor() { return parseInt(this._inputGrosor.value); }
-    getCap()    { return this._selectCap.value; }
+    getTipoLinea()    { return this._selectTipoLinea.value; }
 
     onCargar()
     {
@@ -120,11 +259,21 @@ class ControllerEj12
         if (event.detail === 'cargar')
         {
             this._model.setLineWidth(this._view.getGrosor());
-            this._model.setLineCap(this._view.getCap());
+            this._model.setTipoLinea(this._view.getTipoLinea());
 
-            let json   = prompt('Ingrese la figura en formato JSON:');
-            let figura = JSON.parse(json);
-            this._model.agregarFigura(figura);
+            let json = prompt('Ingrese la figura en formato JSON:', '{ "tipo": "circulo", "x": 400, "y": 300, "radio": 100 }');
+
+            if (json === null || json.trim() === '')
+            {
+                return;
+            }
+
+            let figura = interpretarFiguraEj12(json);
+
+            if (figura !== null)
+            {
+                this._model.agregarFigura(figura);
+            }
         }
         if (event.detail === 'limpiar')
         {
@@ -135,14 +284,14 @@ class ControllerEj12
     onModelChanged()
     {
         let figuras = this._model.getFiguras();
-        this._view.render( (canvas) =>
+        this._view.render(function(canvas)
         {
             let ctx = canvas.getContext('2d');
             for (let i = 0; i < figuras.length; i++)
             {
                 let f = figuras[i];
                 ctx.lineWidth = f.lineWidth;
-                ctx.lineCap   = f.lineCap;
+                ctx.setLineDash(patronLineaEj12(f.tipoLinea));
 
                 if (f.tipo === 'circulo')
                 {

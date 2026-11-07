@@ -28,6 +28,14 @@
             <option value="ejercicio-14.js" data-fn="ejercicio14">Ejercicio 14</option>
             <option value="ejercicio-15.js" data-fn="ejercicio15">Ejercicio 15</option>
             <option value="ejercicio-16.js" data-fn="ejercicio16">Ejercicio 16</option>
+            <option value="ejercicio-17.js" data-fn="ejercicio17">Ejercicio 17</option>
+            <option value="ejercicio-20.js" data-fn="ejercicio20">Ejercicio 20</option>
+            <option value="ejercicio-21.js" data-fn="ejercicio21">Ejercicio 21</option>
+            <option value="ejercicio-24.js" data-fn="ejercicio24">Ejercicio 24</option>
+            <option value="ejercicio-25.js" data-fn="ejercicio25">Ejercicio 25</option>
+            <option value="ejercicio-27.js" data-fn="ejercicio27">Ejercicio 27</option>
+            <option value="ejercicio-30.js" data-fn="ejercicio30">Ejercicio 30</option>
+            <option value="ejercicio-31.js" data-fn="ejercicio31">Ejercicio 31</option>
         </select>
     </div>
 
@@ -40,14 +48,21 @@
             let archivo   = this.value;
             let nombreFn  = this.options[this.selectedIndex].dataset.fn;
             let contenedor = document.getElementById('app');
-            contenedor.innerHTML = '';
+            while (contenedor.firstChild)
+            {
+                contenedor.removeChild(contenedor.firstChild);
+            }
 
             if (archivo) {
-                let scriptAnterior = document.getElementById('script-ejercicio');
-                if (scriptAnterior) scriptAnterior.remove();
+                if (typeof window[nombreFn] === 'function')
+                {
+                    let vista = new View();
+                    contenedor.appendChild(vista);
+                    vista.render(window[nombreFn]);
+                    return;
+                }
 
                 let script = document.createElement('script');
-                script.id  = 'script-ejercicio';
                 script.src = archivo;
 
                 script.onload = function() {

@@ -14,9 +14,9 @@
         <label for="selector">Seleccionar Ejercicio: </label>
         <select id="selector">
             <option value="">-- Elija una opción --</option>
-            <option value="ejercicio-6.js">Ejercicio 6</option>
-            <option value="ejercicio-12.js">Ejercicio 12</option>
-            <option value="ejercicio-19.js">Ejercicio 19</option>
+            <option value="ejercicio-6.js"  data-fn="mainEj6">Ejercicio 6</option>
+            <option value="ejercicio-12.js" data-fn="mainEj12">Ejercicio 12</option>
+            <option value="ejercicio-19.js" data-fn="mainEj19">Ejercicio 19</option>
         </select>
     </div>
 
@@ -26,20 +26,30 @@
 
     <script>
         document.getElementById('selector').addEventListener('change', function() {
-            let archivo = this.value;
+            let archivo    = this.value;
+            let nombreFn   = this.options[this.selectedIndex].dataset.fn;
             let contenedor = document.getElementById('app');
-            contenedor.innerHTML = '';
-            if (archivo) {
-                let scriptAnterior = document.getElementById('script-ejercicio');
-                if (scriptAnterior) scriptAnterior.remove();
+
+            while (contenedor.firstChild)
+            {
+                contenedor.removeChild(contenedor.firstChild);
+            }
+
+            if (archivo)
+            {
+                if (typeof window[nombreFn] === 'function')
+                {
+                    window[nombreFn]();
+                    return;
+                }
+
                 let script = document.createElement('script');
-                script.id  = 'script-ejercicio';
                 script.src = archivo;
+
                 script.onload = function() {
-                    if (archivo === 'ejercicio-6.js')  mainEj6();
-                    if (archivo === 'ejercicio-12.js') mainEj12();
-                    if (archivo === 'ejercicio-19.js') mainEj19();
+                    window[nombreFn]();
                 };
+
                 document.body.appendChild(script);
             }
         });

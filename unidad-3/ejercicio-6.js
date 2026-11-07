@@ -1,3 +1,114 @@
+const EJEMPLOS_EJ6 = 'Cargue una sola figura por vez. Ejemplos:\n' +
+    '{ "tipo": "circulo", "x": 100, "y": 150, "radio": 40 }\n' +
+    '{ "tipo": "poligono", "puntos": [[50,50],[150,50],[100,150]] }';
+
+function normalizarFiguraEj6(figura)
+{
+    if (figura.tipo === undefined)
+    {
+        figura.tipo = figura.type;
+    }
+
+    if (figura.tipo === 'circle')
+    {
+        figura.tipo = 'circulo';
+    }
+
+    if (figura.tipo === 'polygon')
+    {
+        figura.tipo = 'poligono';
+    }
+
+    if (figura.radio === undefined)
+    {
+        figura.radio = figura.r;
+    }
+
+    if (figura.radio === undefined)
+    {
+        figura.radio = figura.radius;
+    }
+
+    if (figura.puntos === undefined)
+    {
+        figura.puntos = figura.points;
+    }
+
+    if (Array.isArray(figura.puntos))
+    {
+        for (let i = 0; i < figura.puntos.length; i++)
+        {
+            let punto = figura.puntos[i];
+
+            if (Array.isArray(punto))
+            {
+                figura.puntos[i] = { x: punto[0], y: punto[1] };
+            }
+        }
+    }
+}
+
+function figuraValidaEj6(figura)
+{
+    if (figura.tipo === 'circulo')
+    {
+        return Number.isFinite(figura.x) && Number.isFinite(figura.y) && Number.isFinite(figura.radio);
+    }
+
+    if (figura.tipo === 'poligono')
+    {
+        if (!Array.isArray(figura.puntos) || figura.puntos.length < 3)
+        {
+            return false;
+        }
+
+        for (let i = 0; i < figura.puntos.length; i++)
+        {
+            let punto = figura.puntos[i];
+
+            if (punto === null || !Number.isFinite(punto.x) || !Number.isFinite(punto.y))
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    return false;
+}
+
+function interpretarFiguraEj6(json)
+{
+    let figura;
+
+    try
+    {
+        figura = JSON.parse(json);
+    }
+    catch (error)
+    {
+        alert('El texto no es un JSON válido.\n' + EJEMPLOS_EJ6);
+        return null;
+    }
+
+    if (figura === null || typeof figura !== 'object')
+    {
+        alert('El JSON no describe una figura.\n' + EJEMPLOS_EJ6);
+        return null;
+    }
+
+    normalizarFiguraEj6(figura);
+
+    if (!figuraValidaEj6(figura))
+    {
+        alert('A la figura le faltan datos o tienen un formato incorrecto.\n' + EJEMPLOS_EJ6);
+        return null;
+    }
+
+    return figura;
+}
+
 class ModelEj6 extends EventTarget
 {
     constructor()
@@ -38,8 +149,11 @@ class ViewEj6 extends View
         this._btnLimpiar = document.createElement('button');
         this._btnCargar.innerText  = 'Cargar';
         this._btnLimpiar.innerText = 'Limpiar';
-        this.appendChild(this._btnCargar);
-        this.appendChild(this._btnLimpiar);
+        let controles = document.createElement('div');
+        controles.style.marginBottom = '10px';
+        controles.appendChild(this._btnCargar);
+        controles.appendChild(this._btnLimpiar);
+        this.insertBefore(controles, this._canvas);
     }
 
     onCargar()
@@ -93,9 +207,19 @@ class ControllerEj6
     {
         if (event.detail === 'cargar')
         {
-            let json   = prompt('Ingrese la figura en formato JSON:');
-            let figura = JSON.parse(json);
-            this._model.agregarFigura(figura);
+            let json = prompt('Ingrese la figura en formato JSON:', '{ "tipo": "circulo", "x": 400, "y": 300, "radio": 100 }');
+
+            if (json === null || json.trim() === '')
+            {
+                return;
+            }
+
+            let figura = interpretarFiguraEj6(json);
+
+            if (figura !== null)
+            {
+                this._model.agregarFigura(figura);
+            }
         }
         if (event.detail === 'limpiar')
         {
@@ -106,7 +230,7 @@ class ControllerEj6
     onModelChanged()
     {
         let figuras = this._model.getFiguras();
-        this._view.render( (canvas) =>
+        this._view.render(function(canvas)
         {
             let ctx = canvas.getContext('2d');
             for (let i = 0; i < figuras.length; i++)

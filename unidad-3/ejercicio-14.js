@@ -1,36 +1,50 @@
-function ejercicio14(canvas) {
-    canvas.width  = 400;
-    canvas.height = 200;
+function crearInputColorEj14(contenedor, texto, valor, onCambio)
+{
+    let etiqueta = document.createElement('label');
+    etiqueta.innerText = texto + ': ';
 
-    // Crear controles si no existen
-    let contenedor = canvas.parentElement;
-    if (!contenedor.querySelector('.ej14-controles')) {
-        let div = document.createElement('div');
-        div.className = 'ej14-controles';
-        div.style.marginBottom = '10px';
-        div.innerHTML = `
-            <label>Color 1: <input type="color" id="color1" value="#ff0000"></label>
-            <label>Color 2: <input type="color" id="color2" value="#0000ff"></label>
-        `;
-        contenedor.insertBefore(div, canvas);
+    let input = document.createElement('input');
+    input.type  = 'color';
+    input.value = valor;
+    input.oninput = onCambio;
 
-        div.querySelectorAll('input').forEach(function(input) {
-            input.addEventListener('input', function() { dibujar14(canvas); });
-        });
-    }
-    dibujar14(canvas);
+    etiqueta.appendChild(input);
+    contenedor.appendChild(etiqueta);
+
+    return input;
 }
 
-function dibujar14(canvas) {
-    let ctx = canvas.getContext('2d');
+function dibujarRectanguloEj14(ctx, colorHex1, colorHex2)
+{
+    let ancho = 200;
+    let alto  = 400;
+    let x = 300;
+    let y = 100;
 
-    let color1 = document.getElementById('color1').value;
-    let color2 = document.getElementById('color2').value;
-
-    let gradiente = ctx.createLinearGradient(0, 0, canvas.width, 0);
-    gradiente.addColorStop(0, color1);
-    gradiente.addColorStop(1, color2);
+    let gradiente = ctx.createLinearGradient(x, 0, x + ancho, 0);
+    gradiente.addColorStop(0, colorHex1);
+    gradiente.addColorStop(1, colorHex2);
 
     ctx.fillStyle = gradiente;
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillRect(x, y, ancho, alto);
+}
+
+function ejercicio14(canvas)
+{
+    let ctx = canvas.getContext('2d');
+    let controles = document.createElement('div');
+    let inputColor1;
+    let inputColor2;
+
+    function redibujar()
+    {
+        dibujarRectanguloEj14(ctx, inputColor1.value, inputColor2.value);
+    }
+
+    inputColor1 = crearInputColorEj14(controles, 'Color 1', '#ff0000', redibujar);
+    inputColor2 = crearInputColorEj14(controles, 'Color 2', '#0000ff', redibujar);
+
+    canvas.parentElement.insertBefore(controles, canvas);
+
+    redibujar();
 }

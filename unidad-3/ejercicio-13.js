@@ -1,38 +1,110 @@
-function ejercicio13(canvas) {
-    // Crear controles si no existen
-    let contenedor = canvas.parentElement;
-    if (!contenedor.querySelector('.ej13-controles')) {
-        let div = document.createElement('div');
-        div.className = 'ej13-controles';
-        div.style.marginBottom = '10px';
-        div.innerHTML = `
-            <label>R: <input type="range" id="slider-r" min="0" max="255" value="128"></label>
-            <label>G: <input type="range" id="slider-g" min="0" max="255" value="64"></label>
-            <label>B: <input type="range" id="slider-b" min="0" max="255" value="200"></label>
-        `;
-        contenedor.insertBefore(div, canvas);
- 
-        // Redibujar al mover cualquier slider
-        div.querySelectorAll('input').forEach(function(input) {
-            input.addEventListener('input', function() { dibujar13(canvas); });
-        });
+class SliderEj13 extends HTMLElement
+{
+    constructor()
+    {
+        super();
+
+        this._etiqueta = document.createElement('label');
+
+        this._slider = document.createElement('input');
+        this._slider.type = 'range';
+        this._slider.min  = 0;
+        this._slider.max  = 255;
+
+        this._valor = document.createElement('span');
+
+        this.appendChild(this._etiqueta);
+        this.appendChild(this._slider);
+        this.appendChild(this._valor);
     }
-    dibujar13(canvas);
+
+    get value()
+    {
+        return parseInt(this._slider.value);
+    }
+
+    set value(nuevoValor)
+    {
+        this._slider.value = nuevoValor;
+        this._valor.innerText = nuevoValor;
+    }
+
+    set etiqueta(texto)
+    {
+        this._etiqueta.innerText = texto + ': ';
+    }
+
+    _onInput()
+    {
+        this._valor.innerText = this._slider.value;
+        this.dispatchEvent(new CustomEvent('request', { detail: 'cambio' }));
+    }
+
+    connectedCallback()
+    {
+        this._slider.oninput = this._onInput.bind(this);
+    }
+
+    disconnectedCallback()
+    {
+        this._slider.oninput = null;
+    }
 }
- 
-function dibujar13(canvas) {
-    let ctx = canvas.getContext('2d');
+
+customElements.define('x-slider-ej13', SliderEj13);
+
+function crearSliderEj13(contenedor, etiqueta, valor, onCambio)
+{
+    let slider = new SliderEj13();
+    slider.etiqueta = etiqueta;
+    slider.value = valor;
+    slider.addEventListener('request', onCambio);
+    contenedor.appendChild(slider);
+
+    return slider;
+}
+
+function dibujarTableroEj13(ctx, r, g, b)
+{
     let tamanoCasilla = 32;
- 
-    let r = parseInt(document.getElementById('slider-r').value);
-    let g = parseInt(document.getElementById('slider-g').value);
-    let b = parseInt(document.getElementById('slider-b').value);
- 
-    for (let fila = 0; fila < 8; fila++) {
-        for (let col = 0; col < 8; col++) {
-            ctx.fillStyle = 'rgb(' + r + ', ' + g + ', ' + b + ')';
-            ctx.fillRect(col * tamanoCasilla, fila * tamanoCasilla, tamanoCasilla, tamanoCasilla);
+    let colorOscuro = 'rgb(' + r + ', ' + g + ', ' + b + ')';
+
+    for (let fila = 0; fila < 8; fila++)
+    {
+        for (let columna = 0; columna < 8; columna++)
+        {
+            if ((fila + columna) % 2 === 0)
+            {
+                ctx.fillStyle = 'white';
+            }
+            else
+            {
+                ctx.fillStyle = colorOscuro;
+            }
+
+            ctx.fillRect(columna * tamanoCasilla, fila * tamanoCasilla, tamanoCasilla, tamanoCasilla);
         }
     }
 }
- 
+
+function ejercicio13(canvas)
+{
+    let ctx = canvas.getContext('2d');
+    let controles = document.createElement('div');
+    let sliderR;
+    let sliderG;
+    let sliderB;
+
+    function redibujar()
+    {
+        dibujarTableroEj13(ctx, sliderR.value, sliderG.value, sliderB.value);
+    }
+
+    sliderR = crearSliderEj13(controles, 'R', 0, redibujar);
+    sliderG = crearSliderEj13(controles, 'G', 0, redibujar);
+    sliderB = crearSliderEj13(controles, 'B', 0, redibujar);
+
+    canvas.parentElement.insertBefore(controles, canvas);
+
+    redibujar();
+}
