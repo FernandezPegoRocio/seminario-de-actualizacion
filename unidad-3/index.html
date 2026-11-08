@@ -1,79 +1,25 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="utf-8" />
-    <title>Seminario - Guía de Ejercicios</title>
-    <style>
-        body { font-family: sans-serif; margin: 20px; }
-        #menu { margin-bottom: 15px; }
-    </style>
+    <title>Seminario - Ejercicios integradores</title>
+    <script src="MVCCanvas.js"></script>
+    <script src="ejercicio-6.js"></script>
+    <script src="ejercicio-12.js"></script>
+    <script src="ejercicio-19.js"></script>
 </head>
 <body>
-
-    <div id="menu">
-        <label for="selector">Seleccionar Ejercicio: </label>
-        <select id="selector">
-            <option value="">-- Elija una opción --</option>
-            <option value="ejercicio-1.js"  data-fn="ejercicio1">Ejercicio 1</option>
-            <option value="ejercicio-2.js"  data-fn="ejercicio2">Ejercicio 2</option>
-            <option value="ejercicio-3.js"  data-fn="ejercicio3">Ejercicio 3</option>
-            <option value="ejercicio-4.js"  data-fn="ejercicio4">Ejercicio 4</option>
-            <option value="ejercicio-5.js"  data-fn="ejercicio5">Ejercicio 5</option>
-            <option value="ejercicio-7.js"  data-fn="ejercicio7">Ejercicio 7</option>
-            <option value="ejercicio-8.js"  data-fn="ejercicio8">Ejercicio 8</option>
-            <option value="ejercicio-9.js"  data-fn="ejercicio9">Ejercicio 9</option>
-            <option value="ejercicio-10.js" data-fn="ejercicio10">Ejercicio 10</option>
-            <option value="ejercicio-11.js" data-fn="ejercicio11">Ejercicio 11</option>
-            <option value="ejercicio-13.js" data-fn="ejercicio13">Ejercicio 13</option>
-            <option value="ejercicio-14.js" data-fn="ejercicio14">Ejercicio 14</option>
-            <option value="ejercicio-15.js" data-fn="ejercicio15">Ejercicio 15</option>
-            <option value="ejercicio-16.js" data-fn="ejercicio16">Ejercicio 16</option>
-            <option value="ejercicio-17.js" data-fn="ejercicio17">Ejercicio 17</option>
-            <option value="ejercicio-20.js" data-fn="ejercicio20">Ejercicio 20</option>
-            <option value="ejercicio-21.js" data-fn="ejercicio21">Ejercicio 21</option>
-            <option value="ejercicio-24.js" data-fn="ejercicio24">Ejercicio 24</option>
-            <option value="ejercicio-25.js" data-fn="ejercicio25">Ejercicio 25</option>
-            <option value="ejercicio-27.js" data-fn="ejercicio27">Ejercicio 27</option>
-            <option value="ejercicio-30.js" data-fn="ejercicio30">Ejercicio 30</option>
-            <option value="ejercicio-31.js" data-fn="ejercicio31">Ejercicio 31</option>
-        </select>
-    </div>
-
     <div id="app"></div>
 
-    <script src="MVCCanvas.js"></script>
-
     <script>
-        document.getElementById('selector').addEventListener('change', function() {
-            let archivo   = this.value;
-            let nombreFn  = this.options[this.selectedIndex].dataset.fn;
-            let contenedor = document.getElementById('app');
-            while (contenedor.firstChild)
-            {
-                contenedor.removeChild(contenedor.firstChild);
-            }
+        function main()
+        {
+            mainEj6();
+            mainEj12();
+            mainEj19();
+        }
 
-            if (archivo) {
-                if (typeof window[nombreFn] === 'function')
-                {
-                    let vista = new View();
-                    contenedor.appendChild(vista);
-                    vista.render(window[nombreFn]);
-                    return;
-                }
-
-                let script = document.createElement('script');
-                script.src = archivo;
-
-                script.onload = function() {
-                    let wc = new View();
-                    contenedor.appendChild(wc);
-                    wc.render(window[nombreFn]);
-                };
-
-                document.body.appendChild(script);
-            }
-        });
+        window.onload = main;
     </script>
 </body>
 </html>
